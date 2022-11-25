@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,6 +11,8 @@ import '../helper/Helpers.dart';
 import '../models/ModelLogIn.dart';
 import '../models/ModelResponseCommon.dart';
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
 Future<ModelResponseCommon> getUpdateCartData(
     BuildContext context, productId, quantity) async {
@@ -25,24 +28,27 @@ Future<ModelResponseCommon> getUpdateCartData(
   }
   map['product_id'] = productId;
   map['quantity'] = quantity;
+  EasyLoading.show();
 
   final headers = {
     HttpHeaders.contentTypeHeader: 'application/json',
     HttpHeaders.acceptHeader: 'application/json',
   };
 
-  OverlayEntry loader = Helpers.overlayLoader(context);
-  Overlay.of(context)!.insert(loader);
+  print("lmksdkjfkgvnjfvhn" + map.toString());
 
-  print('RESPONSE DATA 22:: ' + jsonEncode(map));
+  // OverlayEntry loader = Helpers.overlayLoader(context);
+  // Overlay.of(context)!.insert(loader);
+
   http.Response response = await http.post(Uri.parse(ApiUrls.getUpdateCartUrl),
       body: jsonEncode(map), headers: headers);
 
   if (response.statusCode == 200) {
-    Helpers.hideLoader(loader);
+    EasyLoading.dismiss();
+
     return ModelResponseCommon.fromJson(json.decode(response.body));
   } else {
-    Helpers.hideLoader(loader);
+    EasyLoading.dismiss();
     Helpers.createSnackBar(context, response.statusCode.toString());
     throw Exception(response.body);
   }
@@ -67,8 +73,7 @@ Future<ModelResponseCommon> getUpdateCartVariationData(
     HttpHeaders.contentTypeHeader: 'application/json',
     HttpHeaders.acceptHeader: 'application/json',
   };
-
-  print('RESPONSE DATA 22:: ' + jsonEncode(map));
+  print("$map this is the map values");
   OverlayEntry loader = Helpers.overlayLoader(context);
   Overlay.of(context)!.insert(loader);
 
@@ -79,6 +84,9 @@ Future<ModelResponseCommon> getUpdateCartVariationData(
     Helpers.hideLoader(loader);
     return ModelResponseCommon.fromJson(json.decode(response.body));
   } else {
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
+
     Helpers.hideLoader(loader);
     Helpers.createSnackBar(context, response.statusCode.toString());
     throw Exception(response.body);

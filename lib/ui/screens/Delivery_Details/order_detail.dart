@@ -1,8 +1,16 @@
-import 'package:dinelah/controller/MySingleOrdersController.dart';
-import 'package:dinelah/ui/screens/Delivery_Details/store_info_tab_screen.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:file_utils/file_utils.dart';
+import 'package:open_file/open_file.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:traidbiz/controller/MySingleOrdersController.dart';
+import 'package:traidbiz/ui/screens/Delivery_Details/store_info_tab_screen.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../res/app_assets.dart';
 import '../../../res/theme/theme.dart';
@@ -19,6 +27,12 @@ class OrderDetailState extends State<OrderDetail>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
   var id;
+
+  bool downloading = false;
+  RxString progress = "0".obs;
+  RxString progress1 = "0".obs;
+  var path = "No Data";
+  var _onPressed;
 
   final controller = Get.put(MySingleOrdersController());
   @override
@@ -61,6 +75,7 @@ class OrderDetailState extends State<OrderDetail>
                               children: [
                                 Card(
                                   child: Container(
+                                    margin: EdgeInsets.only(top: 10),
                                     width: MediaQuery.of(context).size.width,
                                     padding: const EdgeInsets.all(10),
                                     child: Column(
@@ -76,21 +91,27 @@ class OrderDetailState extends State<OrderDetail>
                                                   Icons.calendar_today,
                                                   controller.model.value.data!
                                                       .orderData.status
-                                                      .toString()
+                                                      .toString(),
 //DateFormat("MMM, dd-yyyy").format(order.dateCreated.date),
                                                   ),
                                             ),
                                           ],
                                         ),
                                         addHeight(24),
-                                        ListView.builder(
-                                            shrinkWrap: true,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            itemCount: 2,
-                                            itemBuilder: (context, index) {
-                                              return Text('list');
-                                            }),
+                                        // ListView.builder(
+                                        //     shrinkWrap: true,
+                                        //     physics:
+                                        //         const NeverScrollableScrollPhysics(),
+                                        //     itemCount: 2,
+                                        //     itemBuilder: (context, index) {
+                                        //       return Text(controller
+                                        //           .model
+                                        //           .value
+                                        //           .data!
+                                        //           .orderData
+                                        //           .lineItems[0]
+                                        //           .);
+                                        //     }),
                                         Row(
                                           children: [
                                             Expanded(
@@ -151,7 +172,7 @@ class OrderDetailState extends State<OrderDetail>
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold),
                                         ),
-                                      )
+                                      ),
                                     ],
                                     labelStyle: const TextStyle(
                                         fontSize: 18.0, color: Colors.white),
@@ -171,9 +192,7 @@ class OrderDetailState extends State<OrderDetail>
                                   child: TabBarView(
                                     controller: tabController,
                                     children: [
-                                      controller.model.value.data!
-                                                  .deliveryDetail ==
-                                              null
+                                      controller.model.value.data!.deliveryDetail == null
                                           ? const SizedBox(
                                               width: 200,
                                               child: Card(
@@ -182,10 +201,17 @@ class OrderDetailState extends State<OrderDetail>
                                                         'Oops! Driver not Assigned for you order.')),
                                               ),
                                             )
-                                          : DeliveryDetails(
-                                              controller.model.value.data),
-                                      StoreInformation(
-                                          controller.model.value.data)
+                                          : DeliveryDetails(controller.model.value.data),
+                                      controller.model.value.data!.storeInformation == null
+                                          ? const SizedBox(
+                                        width: 200,
+                                        child: Card(
+                                          child: Center(
+                                              child: Text(
+                                                  'Oops! Driver not Assigned for you order.')),
+                                        ),
+                                      )
+                                          : StoreInformation(controller.model.value.data)
                                     ],
                                   ),
                                 ),
@@ -261,8 +287,7 @@ class OrderDetailState extends State<OrderDetail>
     );
   }
 
-  Widget _getItemAndStatusRow(
-      String item, String payMode, String productTotal) {
+  Widget _getItemAndStatusRow(String item, String payMode, String productTotal) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -270,11 +295,11 @@ class OrderDetailState extends State<OrderDetail>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FittedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
                       item,
                       style: const TextStyle(
                         color: Color(0xff303c5e),
@@ -282,16 +307,16 @@ class OrderDetailState extends State<OrderDetail>
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      productTotal,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  ),
+                  Text(
+                    productTotal,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               addHeight(4.0),
               Text(
@@ -309,4 +334,6 @@ class OrderDetailState extends State<OrderDetail>
       ],
     );
   }
+
+
 }

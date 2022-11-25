@@ -1,12 +1,12 @@
-import 'package:dinelah/controller/BottomNavController.dart';
-import 'package:dinelah/controller/vendorsListController.dart';
-import 'package:dinelah/helper/Helpers.dart';
-import 'package:dinelah/models/ModelSearchProduct.dart';
-import 'package:dinelah/models/ModelVendorStore.dart';
-import 'package:dinelah/repositories/get_update_cart_repository.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/ui/widget/common_button.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
+import 'package:traidbiz/controller/BottomNavController.dart';
+import 'package:traidbiz/controller/vendorsListController.dart';
+import 'package:traidbiz/helper/Helpers.dart';
+import 'package:traidbiz/models/ModelSearchProduct.dart';
+import 'package:traidbiz/models/ModelVendorStore.dart';
+import 'package:traidbiz/repositories/get_update_cart_repository.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/ui/widget/common_button.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -70,7 +70,7 @@ class SearchHostProductState extends State<SearchHostProduct> {
           color: Color(0xfffff8f9),
           image: DecorationImage(
             image: AssetImage(
-              AppAssets.shapeBg,
+              AppAssets.dashboardBg,
             ),
             alignment: Alignment.topRight,
             fit: BoxFit.contain,
@@ -157,27 +157,27 @@ class SearchHostProductState extends State<SearchHostProduct> {
                                               ),
                                             ),
                                           ),
-                                          InkWell(
-                                            onTap: () {
-                                              Get.toNamed(MyRouter.filterHost,
-                                                  arguments: [
-                                                    controller
-                                                        .searchKeyboard.value
-                                                  ]);
-                                            },
-                                            child: Container(
-                                              width: 42,
-                                              height: 42,
-                                              margin: const EdgeInsets.all(8),
-                                              padding: const EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.black,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8)),
-                                              child: Image.asset(
-                                                  AppAssets.filterIcon),
-                                            ),
-                                          )
+                                          // InkWell(
+                                          //   onTap: () {
+                                          //     Get.toNamed(MyRouter.filterHost,
+                                          //         arguments: [
+                                          //           controller
+                                          //               .searchKeyboard.value
+                                          //         ]);
+                                          //   },
+                                          //   child: Container(
+                                          //     width: 42,
+                                          //     height: 42,
+                                          //     margin: const EdgeInsets.all(8),
+                                          //     padding: const EdgeInsets.all(10),
+                                          //     decoration: BoxDecoration(
+                                          //         color: Colors.black,
+                                          //         borderRadius:
+                                          //             BorderRadius.circular(8)),
+                                          //     child: Image.asset(
+                                          //         AppAssets.filterIcon),
+                                          //   ),
+                                          // )
                                         ],
                                       ),
                                     ),
@@ -212,9 +212,9 @@ class SearchHostProductState extends State<SearchHostProduct> {
                                               Text(
                                                 'Sort By',
                                                 style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                  fontSize: 20,
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                               addHeight(24),
                                               Expanded(
@@ -233,20 +233,23 @@ class SearchHostProductState extends State<SearchHostProduct> {
                                         ),
                                       );
                                     },
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'Sort by',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                        Icon(
-                                          Icons.arrow_drop_down,
-                                          color: Colors.white,
-                                        ),
-                                      ],
+                                    child: Container(
+                                      margin: EdgeInsets.only(top: 10),
+                                      child: Row(
+                                        children: const [
+                                          Text(
+                                            'Sort by',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          Icon(
+                                            Icons.arrow_drop_down,
+                                            color: Colors.black,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Visibility(
@@ -375,17 +378,23 @@ class SearchHostProductState extends State<SearchHostProduct> {
                                         ),
                                       );
                                     },
-                                    child: const Text(
-                                      'Sort by',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600),
+                                    child: Container(
+                                      margin: const EdgeInsets.only(top: 10),
+                                      child: const Text(
+                                        'Sort by',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600),
+                                      ),
                                     ),
                                   ),
-                                  const Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Colors.white,
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 10),
+                                    child: const Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.black,
+                                    ),
                                   )
                                 ],
                               ),
@@ -436,13 +445,7 @@ class SearchHostProductState extends State<SearchHostProduct> {
                         width: MediaQuery.of(context).size.width,
                         color: Colors.grey,
                         height: 130,
-                        child: /*store.banner==null
-                          ? Image.asset(AppAssets.drawerIcon)
-                          : CachedNetworkImage(
-                          imageUrl: store.banner,fit: BoxFit.cover,
-                      placeholder: (context, url) => loader(context),
-                      ),*/
-                            Image.network(
+                        child: Image.network(
                           store.banner,
                           loadingBuilder: (BuildContext context, Widget child,
                               ImageChunkEvent? loadingProgress) {

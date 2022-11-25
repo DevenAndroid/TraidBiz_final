@@ -1,5 +1,5 @@
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:geocode/geocode.dart';
 import 'package:get/get.dart';

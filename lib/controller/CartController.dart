@@ -1,4 +1,4 @@
-import 'package:dinelah/models/ModelGetCart.dart';
+import 'package:traidbiz/models/ModelGetCart.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 

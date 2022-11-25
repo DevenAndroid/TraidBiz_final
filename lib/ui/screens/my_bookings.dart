@@ -1,7 +1,7 @@
-// import 'package:dinelah/controller/MyBookingsController.dart';
-// import 'package:dinelah/models/ModelMyBookings.dart';
-// import 'package:dinelah/res/theme/theme.dart';
-// import 'package:dinelah/routers/my_router.dart';
+// import 'package:traidbiz/controller/MyBookingsController.dart';
+// import 'package:traidbiz/models/ModelMyBookings.dart';
+// import 'package:traidbiz/res/theme/theme.dart';
+// import 'package:traidbiz/routers/my_router.dart';
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 //

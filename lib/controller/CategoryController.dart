@@ -1,10 +1,11 @@
-import 'package:dinelah/models/ModelCategoryData.dart';
-import 'package:dinelah/models/ModelCategoryProducts.dart';
-import 'package:dinelah/repositories/get_category_products.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
+import 'package:traidbiz/models/ModelCategoryData.dart';
+import 'package:traidbiz/models/ModelCategoryProducts.dart';
+import 'package:traidbiz/repositories/get_category_products.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:get/get.dart';
 
 import '../repositories/category_repository.dart';
+import '../repositories/update_user_currency.dart';
 
 class CategoryController extends GetxController {
   Rx<ModelCategoryData> catModel = ModelCategoryData().obs;

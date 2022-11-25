@@ -1,4 +1,4 @@
-import 'package:dinelah/res/theme/theme.dart';
+import 'package:traidbiz/res/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,9 +10,11 @@ class CommonTextFieldWidgetForgotPassword extends StatelessWidget {
   RxBool isPasswordShow = false.obs;
   String hint;
   TextEditingController controller;
+  FormFieldValidator validator;
 
   CommonTextFieldWidgetForgotPassword(
-      {required this.icon,
+      {required this.validator,
+      required this.icon,
       this.isPassword: false,
       required this.hint,
       required this.controller,
@@ -33,18 +35,14 @@ class CommonTextFieldWidgetForgotPassword extends StatelessWidget {
                       if (isPassword) {
                         if (value!.trim().isEmpty) {
                           return 'Please enter password';
-                        } else if (value.length < 4) {
+                        } else if (value.length <= 6) {
                           return 'Password must be greater then 6';
-                        }
-                        /*else if (!validatePassword(value)) {
-                  return 'Password must be a combination of upper and lower with special char and number';
-                } */
-                        else if (value.length > 16) {
+                        } else if (value.length > 16) {
                           return 'Password must be less then 16';
                         }
                       } else {
                         if (value!.trim().isEmpty) {
-                          return 'Please enter username or email';
+                          return "Please enter username or email";
                         } else if (value.length < 4) {
                           return 'Please enter valid username or email';
                         }
@@ -59,22 +57,27 @@ class CommonTextFieldWidgetForgotPassword extends StatelessWidget {
                         : TextInputAction.next,
                     decoration: InputDecoration(
                       hintText: hint,
+                      errorStyle: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
                       counterText: "",
                       filled: true,
                       hintStyle: TextStyle(color: Colors.white.withAlpha(200)),
                       fillColor: AppTheme.colorEditFieldBg.withAlpha(90),
                       focusColor: AppTheme.colorWhite,
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 18),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 18),
                       // focusedBorder: InputBorder.none,
                       // enabledBorder: InputBorder.none,
                       // errorBorder: InputBorder.none,
                       // disabledBorder: InputBorder.none,
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
+                        borderSide: const BorderSide(color: Colors.white),
                         borderRadius: BorderRadius.circular(5.0),
                       ),
-                      enabledBorder: OutlineInputBorder(
+                      enabledBorder: const OutlineInputBorder(
                           borderSide:
                               BorderSide(color: AppTheme.primaryColorVariant),
                           borderRadius: BorderRadius.all(Radius.circular(5.0))),
@@ -86,20 +89,6 @@ class CommonTextFieldWidgetForgotPassword extends StatelessWidget {
                         icon,
                         color: Colors.white,
                       ),
-                      // suffixIcon: GestureDetector(
-                      //   onTap: () {
-                      //     isPasswordShow.value =
-                      //     !isPasswordShow
-                      //         .value;
-                      //   },
-                      //   child: Icon(
-                      //       isPasswordShow.value
-                      //           ? CupertinoIcons
-                      //           .eye_slash_fill
-                      //           : CupertinoIcons
-                      //           .eye,
-                      //       color: Colors.grey),
-                      // )),
                     )),
               ),
             ],

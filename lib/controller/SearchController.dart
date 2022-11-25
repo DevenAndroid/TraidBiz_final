@@ -1,13 +1,15 @@
-import 'package:dinelah/models/ModelAllAttributes.dart';
-import 'package:dinelah/models/ModelSearchProduct.dart';
-import 'package:dinelah/repositories/get_search_product_repository.dart';
+import 'package:traidbiz/models/ModelAllAttributes.dart';
+import 'package:traidbiz/models/ModelSearchProduct.dart';
+import 'package:traidbiz/models/PopularProduct.dart';
+import 'package:traidbiz/repositories/get_search_product_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 
 class SearchController extends GetxController {
   Rx<ModelSearchProduct> model = ModelSearchProduct().obs;
   Rx<ModelAllAttributes> modelAttribute = ModelAllAttributes().obs;
-  var mListProducts = List<Products>.empty(growable: true).obs;
+  var mListProducts = List<ModelProduct>.empty(growable: true).obs;
   RxBool isDataLoading = false.obs;
   RxString searchKeyboard = ''.obs;
   RxString productType = ''.obs;
@@ -21,14 +23,6 @@ class SearchController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // productType.value = Get.arguments[1];
-    // minPrice.value = Get.arguments[2];
-    // maxPrice.value = Get.arguments[3];
-    // rating.value = Get.arguments[4];
-    // sortBy.value = Get.arguments[5];
-    // modelAttribute.value = Get.arguments[6];
-
-    getMapData();
   }
 
   void getMapData() {

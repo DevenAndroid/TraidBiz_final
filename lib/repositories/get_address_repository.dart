@@ -1,24 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:dinelah/models/ModelNotification.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../helper/Helpers.dart';
 import '../models/ModelAddress.dart';
 import '../models/ModelLogIn.dart';
-import '../models/ModelSingleProduct.dart';
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
-Future<ModelGetAddresss> getAddressData( ) async {
-
+Future<ModelGetAddresss> getAddressData() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
-  ModelLogInData? user = ModelLogInData.fromJson(jsonDecode(pref.getString('user')!));
+  ModelLogInData? user =
+      ModelLogInData.fromJson(jsonDecode(pref.getString('user')!));
   var map = <String, dynamic>{};
   map['cookie'] = user.cookie;
-  print(':::::::::::'+user.cookie.toString());
 
   final headers = {
     HttpHeaders.contentTypeHeader: 'application/json',
@@ -32,12 +27,13 @@ Future<ModelGetAddresss> getAddressData( ) async {
       body: jsonEncode(map), headers: headers);
 
   if (response.statusCode == 200) {
+    print(response.toString() + "RESPONSE FORM ADDRESS SCREEN");
     //Helpers.hideLoader(loader);
-    print("<<<<<<<getAddressData from repository=======>"+response.body.toString());
     return ModelGetAddresss.fromJson(json.decode(response.body));
   } else {
-    //Helpers.hideLoader(loader);
-    //Helpers.createSnackBar(context, response.statusCode.toString());
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
+
     throw Exception(response.body);
   }
 }

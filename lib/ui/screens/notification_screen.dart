@@ -1,10 +1,10 @@
-import 'package:dinelah/controller/NotificationScreenController.dart';
-import 'package:dinelah/models/ModelNotification.dart';
-import 'package:dinelah/repositories/clear_notifications.dart';
-import 'package:dinelah/res/app_assets.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
+import 'package:traidbiz/controller/NotificationScreenController.dart';
+import 'package:traidbiz/models/ModelNotification.dart';
+import 'package:traidbiz/repositories/clear_notifications.dart';
+import 'package:traidbiz/res/app_assets.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

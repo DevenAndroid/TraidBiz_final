@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:client_information/client_information.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/screens/all_hosts.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/screens/all_hosts.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +12,7 @@ class SplashScreenController extends GetxController {
   void onInit() {
     super.onInit();
     _getClientInformation();
-    Future.delayed(const Duration(seconds: 3)).then((value) async {
+    Future.delayed(const Duration(seconds: 2)).then((value) async {
       Get.offAndToNamed(MyRouter.customBottomBar);
       // Get.to(AllHostsScreen());
       // Get.offAndToNamed(MyRouter.logInScreen);

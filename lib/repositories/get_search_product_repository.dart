@@ -2,15 +2,16 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:dinelah/helper/Helpers.dart';
-import 'package:dinelah/models/ModelAllAttributes.dart';
-import 'package:dinelah/models/ModelSearchProduct.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:traidbiz/models/ModelAllAttributes.dart';
+import 'package:traidbiz/models/ModelSearchProduct.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/ModelLogIn.dart';
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
 Future<ModelSearchProduct> getSearchProductData(
     context,
@@ -22,6 +23,7 @@ Future<ModelSearchProduct> getSearchProductData(
     sortBy,
     ModelAllAttributes model) async {
   var map = <String, dynamic>{};
+  EasyLoading.show();
   SharedPreferences pref = await SharedPreferences.getInstance();
   if (pref.getString('user') != null) {
     ModelLogInData? user =
@@ -40,32 +42,35 @@ Future<ModelSearchProduct> getSearchProductData(
   map['latitude'] = pref.getString('latitude');
   map['longitude'] = pref.getString('longitude');
 
-  // SharedPreferences prefs = await SharedPreferences.getInstance();
   pref.getString('latitude');
   pref.getString('longitude');
-
-  log('FILTER REQUEST PARAM :: ' + jsonEncode(map).toString());
 
   final headers = {
     HttpHeaders.contentTypeHeader: 'application/json',
     HttpHeaders.acceptHeader: 'application/json',
   };
 
-  OverlayEntry loader = Helpers.overlayLoader(context);
-  Overlay.of(context)!.insert(loader);
-
   http.Response response = await http.post(
       Uri.parse(ApiUrls.getSearchProductUrl),
       body: jsonEncode(map),
       headers: headers);
 
-  print('RESPONSE DATA :: ' + response.body.toString());
+  log('SEARCH PARAM Dk :: ${jsonEncode(map)}');
+  log('SEARCH RESPONSE :: ${response.body}');
   if (response.statusCode == 200) {
-    Helpers.hideLoader(loader);
+    EasyLoading.dismiss();
+
     return ModelSearchProduct.fromJson(json.decode(response.body));
   } else {
-    Helpers.hideLoader(loader);
-    Helpers.createSnackBar(context, response.statusCode.toString());
+    EasyLoading.dismiss();
+
+    if (response.statusCode != 503) {
+      Get.offAndToNamed(MyRouter.serverErrorUi, arguments: [
+        response.body.toString(),
+        response.statusCode.toString()
+      ]);
+    }
+    // Helpers.createSnackBar(context, response.statusCode.toString());
     throw Exception(response.body);
   }
 }

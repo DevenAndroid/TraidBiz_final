@@ -8,14 +8,13 @@ import 'package:http/http.dart' as http;
 import '../helper/Helpers.dart';
 import '../models/ModelResponseCommon.dart';
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
 Future<ModelResponseCommon> forgotPassword(
     String username, BuildContext context) async {
   var map = <String, dynamic>{};
   map['user_login'] = username;
-
-  print("::::::::::username forgot password:::::::::::" + username.toString());
-
   OverlayEntry loader = Helpers.overlayLoader(context);
   Overlay.of(context)!.insert(loader);
 
@@ -29,11 +28,12 @@ Future<ModelResponseCommon> forgotPassword(
 
   if (response.statusCode == 200) {
     Helpers.hideLoader(loader);
-    print("::::::::::username forgot password:::::::::::" +
-        response.body.toString());
+
     return ModelResponseCommon.fromJson(json.decode(response.body));
   } else {
-    // Helpers.createSnackBar(context, response.statusCode.toString());
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
+
     Helpers.hideLoader(loader);
     throw Exception(response.body);
   }

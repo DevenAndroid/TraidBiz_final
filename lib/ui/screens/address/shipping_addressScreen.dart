@@ -1,11 +1,15 @@
-import 'package:dinelah/controller/AddressController.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/ui/widget/common_button.dart';
-import 'package:dinelah/ui/widget/common_text_field.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
+import 'package:country_pickers/country.dart';
+import 'package:country_pickers/country_picker_dropdown.dart';
+import 'package:country_pickers/utils/utils.dart';
+import 'package:traidbiz/controller/AddressController.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/ui/widget/common_button.dart';
+import 'package:traidbiz/ui/widget/common_text_field.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 
 import '../../../repositories/update_user_meta_repository.dart';
 
@@ -26,6 +30,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
   TextEditingController cityController = TextEditingController();
 
   final AddressController _addressController = Get.put(AddressController());
+  String shippingCountry = "";
 
   @override
   void initState() {
@@ -49,6 +54,9 @@ class _ShippingAddressState extends State<ShippingAddress> {
           .toString();
       cityController.text = _addressController
           .model.value.data!.shippingAddress.shippingCity
+          .toString();
+      shippingCountry = _addressController
+          .model.value.data!.shippingAddress.shippingCountry
           .toString();
     }
   }
@@ -114,7 +122,26 @@ class _ShippingAddressState extends State<ShippingAddress> {
               controller: cityController,
               bgColor: AppTheme.colorEditFieldBg,
             ),
-            addHeight(36),
+            addHeight(12),
+            const Text('Country *'),
+            addHeight(12),
+            Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(color: Colors.grey)),
+              padding: const EdgeInsets.all(10),
+              child: CountryPickerDropdown(
+                initialValue: 'in',
+                isExpanded: true,
+                itemBuilder: _buildDropdownItem,
+                onValuePicked: (Country country) {
+                  shippingCountry = country.isoCode.toString();
+                  print(shippingCountry);
+                },
+              ),
+            ),
+            addHeight(12),
             CommonButton(
                 buttonHeight: 6.5,
                 buttonWidth: 100,
@@ -130,12 +157,18 @@ class _ShippingAddressState extends State<ShippingAddress> {
                     '',
                     '',
                     '',
+                    '',
+                    // for country code
+                    "",
+                    "",
+                    // for country code end
                     fnameController.text.toString(),
                     lnameController.text.toString(),
                     address1.text.toString(),
                     address2.text.toString(),
                     postcodeController.text.toString(),
                     cityController.text.toString(),
+                    shippingCountry.toString(),
                   ).then((value) {
                     if (value.status) {
                       Fluttertoast.showToast(
@@ -153,4 +186,28 @@ class _ShippingAddressState extends State<ShippingAddress> {
       ),
     );
   }
+
+  Widget _buildDropdownItem(Country country) => SizedBox(
+        width: 250,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(
+              width: 10,
+            ),
+            CountryPickerUtils.getDefaultFlagImage(country),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+                child: Text(
+              country.name,
+              overflow: TextOverflow.ellipsis,
+            )),
+            const SizedBox(
+              width: 10,
+            ),
+          ],
+        ),
+      );
 }

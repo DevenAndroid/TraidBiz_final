@@ -1,5 +1,5 @@
-import 'package:dinelah/ui/screens/address/billing_addressScreen.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
+import 'package:traidbiz/ui/screens/address/billing_addressScreen.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../res/app_assets.dart';
 import '../../../res/theme/theme.dart';
@@ -89,11 +89,11 @@ class _AddressScreenState extends State<AddressScreen>
               addHeight(8),
               Expanded(
                 child: TabBarView(
+                  controller: tabController,
                   children: const [
                     BillingAddress(),
                     ShippingAddress(),
                   ],
-                  controller: tabController,
                 ),
               ),
             ],

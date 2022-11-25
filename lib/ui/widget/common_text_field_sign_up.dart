@@ -13,7 +13,8 @@ class CommonTextFieldWidgetSignUp extends StatelessWidget {
   RxBool isPasswordShow = false.obs;
   TextEditingController controller;
 
-  CommonTextFieldWidgetSignUp({required this.hint,
+  CommonTextFieldWidgetSignUp({
+    required this.hint,
     required this.icon,
     required this.type,
     required this.isPassword,

@@ -8,10 +8,12 @@ class ModelSocialResponse {
   var message;
   ModelSocialLogInData? data;
 
-  ModelSocialResponse.fromJson(Map<String, dynamic> json){
+  ModelSocialResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = ModelSocialLogInData.fromJson(json['data']);
+    data = json['data'] == null
+        ? null
+        : ModelSocialLogInData.fromJson(json['data']);
   }
 
   Map<String, dynamic> toJson() {
@@ -35,7 +37,7 @@ class ModelSocialLogInData {
   var cookieName;
   User? user;
 
-  ModelSocialLogInData.fromJson(Map<String, dynamic> json){
+  ModelSocialLogInData.fromJson(Map<String, dynamic> json) {
     cookie = json['cookie'];
     cookieAdmin = json['cookie_admin'];
     cookieName = json['cookie_name'];
@@ -82,7 +84,7 @@ class User {
   var capabilities;
   var avatar;
 
-  User.fromJson(Map<String, dynamic> json){
+  User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     username = json['username'];
     nicename = json['nicename'];

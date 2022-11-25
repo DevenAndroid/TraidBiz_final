@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
-import 'package:dinelah/controller/vendorsListController.dart';
-import 'package:dinelah/models/ModelVendorStore.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
+import 'package:traidbiz/controller/vendorsListController.dart';
+import 'package:traidbiz/models/ModelVendorStore.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -166,7 +166,7 @@ class AllHostsScreenState extends State<AllHostsScreen> {
       onTap: () {
         debugPrint(
             "::::StoreId::::${store.id}::::StoreId::::${store.storeName}");
-        Get.toNamed(MyRouter.hostsScreen, arguments: [store.id]);
+        Get.toNamed(MyRouter.hostsScreen, arguments: [store.id,store.storeName]);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
@@ -184,39 +184,42 @@ class AllHostsScreenState extends State<AllHostsScreen> {
                       topLeft: Radius.circular(15.0),
                     ),
                     child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        color: Colors.grey,
-                        height: 190,
-                        child: /*store.banner==null
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.grey,
+                      height: 190,
+                      child: /*store.banner==null
                           ? Image.asset(AppAssets.drawerIcon)
                           : CachedNetworkImage(
                           imageUrl: store.banner,fit: BoxFit.cover,
                       placeholder: (context, url) => loader(context),
                       ),*/
-                            Image.network(
-                          store.banner,
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            }
-                            return Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 10.0, bottom: 10.0),
-                                child: CircularProgressIndicator(
-                                  color: AppTheme.primaryColor,
-                                  value: loadingProgress.expectedTotalBytes !=
-                                          null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
-                                      : null,
-                                ),
+                          Image.network(
+                        store.banner,
+                        fit: BoxFit.fill,
+                        // height: MediaQuery.of(context).size.height,
+                        // width: MediaQuery.of(context).size.width,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 10.0, bottom: 10.0),
+                              child: CircularProgressIndicator(
+                                color: AppTheme.primaryColor,
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
                               ),
-                            );
-                          },
-                          fit: BoxFit.fitWidth,
-                        )),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -239,7 +242,7 @@ class AllHostsScreenState extends State<AllHostsScreen> {
                           color: AppTheme.primaryColor,
                         ),
                         addWidth(12),
-                        const Text('+91 7742956054',
+                        Text(store.storePhone,
                             style: TextStyle(
                                 color: AppTheme.primaryColor,
                                 fontSize: 16,

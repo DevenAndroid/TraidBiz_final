@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:dinelah/res/app_assets.dart';
-import 'package:dinelah/res/strings.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/widget/common_button.dart';
-import 'package:dinelah/ui/widget/common_text_field.dart';
-import 'package:dinelah/ui/widget/common_text_field_sign_up.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
+import 'package:traidbiz/res/app_assets.dart';
+import 'package:traidbiz/res/strings.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/widget/common_button.dart';
+import 'package:traidbiz/ui/widget/common_text_field.dart';
+import 'package:traidbiz/ui/widget/common_text_field_sign_up.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

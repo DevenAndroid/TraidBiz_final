@@ -1,7 +1,5 @@
-import 'package:dinelah/models/ModelSingleOrder.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
+import 'package:traidbiz/models/ModelSingleOrder.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:geocode/geocode.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -40,44 +38,44 @@ class _StoreInformationState extends State<StoreInformation> {
                 _getStoreAddress(storeInfo.address!.isEmpty
                     ? "N/A"
                     : storeInfo.address.toString()),
-                addHeight(10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Chat',
-                            style: TextStyle(
-                                color: AppTheme.primaryColor,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Get.toNamed(MyRouter.chatScreen, arguments: [
-                          widget.data!.storeInformation,
-                          'store',
-                          widget.data!.orderData!.id
-                        ]);
-                      },
-                      child: const CircleAvatar(
-                        radius: 24,
-                        backgroundColor: Colors.pinkAccent,
-                        child: Icon(
-                          Icons.chat,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                addHeight(16),
+                // addHeight(10),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Expanded(
+                //       child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           const Text(
+                //             'Chat',
+                //             style: TextStyle(
+                //                 color: AppTheme.primaryColor,
+                //                 fontSize: 18.0,
+                //                 fontWeight: FontWeight.bold),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //     InkWell(
+                //       onTap: () {
+                //         Get.toNamed(MyRouter.chatScreen, arguments: [
+                //           widget.data!.storeInformation,
+                //           'store',
+                //           widget.data!.orderData!.id
+                //         ]);
+                //       },
+                //       child: const CircleAvatar(
+                //         radius: 24,
+                //         backgroundColor: Colors.pinkAccent,
+                //         child: Icon(
+                //           Icons.chat,
+                //           color: Colors.white,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // addHeight(16),
               ],
             ),
           )),
@@ -292,9 +290,9 @@ class _StoreInformationState extends State<StoreInformation> {
           ],
         ),
         addHeight(10),
-        const Divider(
-          color: Colors.grey,
-        ),
+        // const Divider(
+        //   color: Colors.grey,
+        // ),
       ],
     );
   }

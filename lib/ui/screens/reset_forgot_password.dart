@@ -1,11 +1,11 @@
-import 'package:dinelah/repositories/update_password_repository.dart';
-import 'package:dinelah/res/app_assets.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/widget/common_button_white.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
-import 'package:dinelah/utils/dimensions.dart';
+import 'package:traidbiz/repositories/update_password_repository.dart';
+import 'package:traidbiz/res/app_assets.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/widget/common_button_white.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
+import 'package:traidbiz/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
@@ -100,7 +100,11 @@ class _ResetForgotPasswordState extends State<ResetForgotPassword> {
                         ),
                         MinLengthValidator(6,
                             errorText:
-                                'Password must contain minimum 6 characters'),
+                                'Password must contain minimum 8 characters'),
+                        PatternValidator(
+                            r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$',
+                            errorText:
+                                "Password must contain\n1 upper case\n1 lower case\n1 digit and\n1 special character")
                       ]),
                       decoration: InputDecoration(
                         fillColor: AppTheme.colorEditFieldBg.withAlpha(90),
@@ -154,6 +158,7 @@ class _ResetForgotPasswordState extends State<ResetForgotPassword> {
                       if (val!.isEmpty) {
                         return 'Confirm password required';
                       }
+
                       return MatchValidator(
                               errorText: 'Password does not matching')
                           .validateMatch(val, newPassword.text);
@@ -215,17 +220,22 @@ class _ResetForgotPasswordState extends State<ResetForgotPassword> {
                     isDataLoading: true,
                     textColor: AppTheme.primaryColor,
                     onTap: () {
-                      if (_formKey.currentState!.validate()) {
-                        updatePassword(email, newPassword.text,
-                                newPassword.text, context)
-                            .then((value) {
-                          showToast(value.message);
-                          if (value.status) {
-                            Get.offAllNamed(MyRouter.logInScreen,
-                                arguments: ['mainScreen']);
-                          }
-                          return null;
-                        });
+                      if (newPassword.text.length < 16 &&
+                          newPassword.text.isNotEmpty) {
+                        if (_formKey.currentState!.validate()) {
+                          updatePassword(email, newPassword.text,
+                                  newPassword.text, context)
+                              .then((value) {
+                            showToast(value.message);
+                            if (value.status) {
+                              Get.offAllNamed(MyRouter.logInScreen,
+                                  arguments: ['mainScreen']);
+                            }
+                            return null;
+                          });
+                        }
+                      } else {
+                        showToast('password should be 8 to 16 character long');
                       }
                     },
                     btnColor: Colors.white,

@@ -1,23 +1,21 @@
-import 'package:dinelah/ui/screens/Delivery_Details/booking_order_detail.dart';
-import 'package:dinelah/ui/screens/Delivery_Details/order_detail.dart';
-import 'package:dinelah/ui/screens/Delivery_Details/sub_order_detail.dart';
-import 'package:dinelah/ui/screens/address/address.dart';
-import 'package:dinelah/ui/screens/cart_screen.dart';
-import 'package:dinelah/ui/screens/change_password.dart';
-import 'package:dinelah/ui/screens/dashboard_screen.dart';
-import 'package:dinelah/ui/screens/filter_host.dart';
-import 'package:dinelah/ui/screens/filter_product.dart';
-import 'package:dinelah/ui/screens/forgot_screen.dart';
-import 'package:dinelah/ui/screens/login_screen.dart';
-import 'package:dinelah/ui/screens/my_bookings.dart';
-import 'package:dinelah/ui/screens/my_orders_screen.dart';
-import 'package:dinelah/ui/screens/reset_forgot_password.dart';
-import 'package:dinelah/ui/screens/search_host_screen.dart';
-import 'package:dinelah/ui/screens/search_screen.dart';
-import 'package:dinelah/ui/screens/signUp_screen.dart';
-import 'package:dinelah/ui/screens/verify_otp_forgot_password.dart';
-import 'package:dinelah/ui/screens/wishList_screen.dart';
-import 'package:dinelah/ui/widget/drawer_items/privacy_policy_drawer.dart';
+import 'package:traidbiz/ui/screens/Delivery_Details/booking_order_detail.dart';
+import 'package:traidbiz/ui/screens/Delivery_Details/order_detail.dart';
+import 'package:traidbiz/ui/screens/Delivery_Details/sub_order_detail.dart';
+import 'package:traidbiz/ui/screens/address/address.dart';
+import 'package:traidbiz/ui/screens/cart_screen.dart';
+import 'package:traidbiz/ui/screens/change_password.dart';
+import 'package:traidbiz/ui/screens/dashboard_screen.dart';
+import 'package:traidbiz/ui/screens/forgot_screen.dart';
+import 'package:traidbiz/ui/screens/login_screen.dart';
+import 'package:traidbiz/ui/screens/my_orders_screen.dart';
+import 'package:traidbiz/ui/screens/reset_forgot_password.dart';
+import 'package:traidbiz/ui/screens/search_host_screen.dart';
+import 'package:traidbiz/ui/screens/search_screen.dart';
+import 'package:traidbiz/ui/screens/signUp_screen.dart';
+import 'package:traidbiz/ui/screens/verify_otp_forgot_password.dart';
+import 'package:traidbiz/ui/screens/verify_signup_screen.dart';
+import 'package:traidbiz/ui/screens/wishList_screen.dart';
+import 'package:traidbiz/ui/static_pages/server_error_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../splash_screen.dart';
@@ -32,21 +30,12 @@ import '../ui/screens/hosts_screen.dart';
 import '../ui/screens/my_profile.dart';
 import '../ui/screens/notification_screen.dart';
 import '../ui/screens/single_product_Screen.dart';
-import '../ui/widget/drawer_items/about_us_drawer.dart';
-import '../ui/widget/drawer_items/contact_us_drawer.dart';
-import '../ui/widget/drawer_items/help_center_drawer.dart';
-import '../ui/widget/drawer_items/payments_options_drawer.dart';
-import '../ui/widget/drawer_items/refer_and_earn_drawer.dart';
-import '../ui/widget/drawer_items/refunds_and_returns_drawer.dart';
-import '../ui/widget/drawer_items/sell_on_traidbiz_screen_drawer.dart';
-import '../ui/widget/drawer_items/shipping_policy.dart';
-import '../ui/widget/drawer_items/terms_and_conditions_drawer.dart';
-import '../ui/widget/drawer_items/why_traidBizScreenDrawer.dart';
 
 class MyRouter {
   static var homeScreen = "/homeScreen";
   static var splashScreen = "/splashScreen";
   static var logInScreen = "/logScreen";
+  static var verifyEmailScreen = "/verifyEmailScreen";
   static var signUpScreen = "/signUpScreen";
   static var dashBoardScreen = "/dashBoardScreen";
   static var customBottomBar = "/customBottomBar";
@@ -89,12 +78,14 @@ class MyRouter {
   static var contactUsScreenDrawer = "/contactUsScreenDrawer";
   static var helpCenterScreenDrawer = "/helpCenterScreenDrawer";
   static var referAndEarnDrawer = "/referAndEarnDrawer";
+  static var serverErrorUi = "/serverErrorUi";
 
   static var route = [
     GetPage(name: '/', page: () => SplashScreen()),
     GetPage(name: MyRouter.splashScreen, page: () => SplashScreen()),
     GetPage(name: MyRouter.logInScreen, page: () => const LoginScreen()),
     GetPage(name: MyRouter.signUpScreen, page: () => SignUpScreen()),
+    GetPage(name: MyRouter.verifyEmailScreen, page: () => VerifyEmailSignup()),
     GetPage(
         name: MyRouter.dashBoardScreen, page: () => const DashBoardScreen()),
     GetPage(
@@ -134,7 +125,7 @@ class MyRouter {
     GetPage(
         name: MyRouter.searchProductScreen, page: () => const SearchProduct()),
     // GetPage(name: MyRouter.filterProduct, page: () => const FilterProduct()),
-    GetPage(name: MyRouter.filterHost, page: () => const FilterHost()),
+    // GetPage(name: MyRouter.filterHost, page: () => const FilterHost()),
     GetPage(
         name: MyRouter.searchHostProduct,
         page: () => const SearchHostProduct()),
@@ -144,30 +135,7 @@ class MyRouter {
     GetPage(
         name: MyRouter.verifyOTPForgotPassword,
         page: () => const VerifyOTPForgotPassword()),
-    GetPage(
-        name: MyRouter.privacyPolicyScreen,
-        page: () => PrivacyPolicyScreenDrawer()),
-    GetPage(name: MyRouter.shippingPolicy, page: () => ShippingPolicyScreen()),
-    GetPage(
-        name: MyRouter.refundDrawerScreen, page: () => RefundDrawerScreen()),
-    GetPage(
-        name: MyRouter.paymentOptionsDrawerScreen,
-        page: () => PaymentsOptionsDrawerScreen()),
-    GetPage(
-        name: MyRouter.aboutUsScreenDrawer, page: () => AboutUsScreenDrawer()),
-    GetPage(
-        name: MyRouter.whyTraidBizScreenDrawer,
-        page: () => WhyTraidBizDrawerScreen()),
-    GetPage(
-        name: MyRouter.sellOnTraidBizScreen,
-        page: () => SellOnTraidBizScreenDrawer()),
-    GetPage(
-        name: MyRouter.termsAndConditionsDrawer,
-        page: () => Terms_and_conditions_drawer()),
-    GetPage(
-        name: MyRouter.helpCenterScreenDrawer,
-        page: () => HelpCenterScreenDrawer()),
-    GetPage(
-        name: MyRouter.referAndEarnDrawer, page: () => ReferAndEarnDrawer()),
+
+    GetPage(name: MyRouter.serverErrorUi, page: () => ServerErrorUi()),
   ];
 }

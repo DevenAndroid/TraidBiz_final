@@ -1,10 +1,12 @@
-import 'package:dinelah/controller/CartController.dart';
-import 'package:dinelah/models/ModelGetCart.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/ui/widget/common_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:traidbiz/controller/BottomNavController.dart';
+import 'package:traidbiz/controller/CartController.dart';
+import 'package:traidbiz/models/ModelGetCart.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/ui/widget/common_button.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 
 import '../../helper/Helpers.dart';
 import '../../repositories/get_cart_data_repository.dart';
@@ -22,6 +24,7 @@ class CartScreen extends StatefulWidget {
 
 class CartScreenState extends State<CartScreen> {
   final CartController _cartController = Get.put(CartController());
+  final bottomNavController = Get.put(BottomNavController());
 
   @override
   void deactivate() {
@@ -114,19 +117,17 @@ class CartScreenState extends State<CartScreen> {
                                                       .data!.cartmeta.subtotal),
                                           addHeight(16),
                                           _getPaymentDetails(
-                                              'Tax and fee:',
-                                              _cartController.model.value.data!
-                                                      .cartmeta.currencySymbol +
-                                                  _cartController
-                                                      .model
-                                                      .value
-                                                      .data!
-                                                      .cartmeta
-                                                      .shippingTotal
-                                                      .toString()),
+                                            'Tax and fee:',
+                                            _cartController.model.value.data!
+                                                    .cartmeta.currencySymbol +
+                                                _cartController.model.value
+                                                    .data!.cartmeta.totalTax
+                                                    .toString(),
+                                          ),
                                           addHeight(16),
                                           _getPaymentDetails(
-                                              'Delivery:', 'Free'),
+                                              'Delivery:', _cartController.model.value.data!
+                                              .cartmeta.shippingTotal),
                                           addHeight(16),
                                           Row(
                                             mainAxisAlignment:
@@ -163,15 +164,11 @@ class CartScreenState extends State<CartScreen> {
                                               buttonWidth: 100,
                                               text: 'CHECKOUT',
                                               onTap: () async {
-                                                SharedPreferences pref =
-                                                    await SharedPreferences
-                                                        .getInstance();
-                                                if (pref.getString('user') !=
-                                                    null) {
+                                                SharedPreferences pref = await SharedPreferences.getInstance();
+                                                if (pref.getString('user') != null) {
                                                   Get.toNamed(
                                                       MyRouter.checkoutScreen,
-                                                      arguments: [
-                                                        _cartController
+                                                      arguments: [_cartController
                                                             .model
                                                             .value
                                                             .data!
@@ -179,8 +176,7 @@ class CartScreenState extends State<CartScreen> {
                                                             .currencySymbol,
                                                       ]);
                                                 } else {
-                                                  Get.toNamed(
-                                                      MyRouter.logInScreen);
+                                                  Get.toNamed(MyRouter.logInScreen);
                                                 }
                                               },
                                               mainGradient: AppTheme
@@ -294,6 +290,10 @@ class CartScreenState extends State<CartScreen> {
                               children: [
                                 InkWell(
                                   onTap: () {
+                                    showToast("Cart Updated");
+                                    print("tem.product!.id for -1" +
+                                        item.product!.id.toString());
+
                                     getUpdateCartData(
                                             context, item.product!.id, '-1')
                                         .then((value) async {
@@ -309,6 +309,7 @@ class CartScreenState extends State<CartScreen> {
                                                   value);
                                         });
                                       } else {
+                                        showToast("minus is not working");
                                         Helpers.createSnackBar(
                                             context, value.message.toString());
                                       }
@@ -338,6 +339,8 @@ class CartScreenState extends State<CartScreen> {
                                 addWidth(10),
                                 InkWell(
                                   onTap: () {
+                                    showToast("Cart Updated");
+
                                     getUpdateCartData(
                                             context, item.product!.id, 1)
                                         .then((value) async {
@@ -376,13 +379,22 @@ class CartScreenState extends State<CartScreen> {
                   right: 0,
                   child: GestureDetector(
                     onTap: () {
+                      showToast("Item removed from cart");
+
                       getUpdateCartData(context, item.product!.id, 0)
                           .then((value) async {
                         if (value.status) {
                           setState(() {
-                            item.quantity = item.quantity + 1;
-                            getCartData().then(
-                                (value) => _cartController.model.value = value);
+                            // item.quantity = item.quantity + 1;
+                            getCartData()
+                                .then((value) =>
+                                    _cartController.model.value = value)
+                                .then((value) {
+                              if (value.status!) {
+                                bottomNavController.getData();
+                              }
+                              return null;
+                            });
                           });
                         } else {
                           Helpers.createSnackBar(
@@ -412,7 +424,7 @@ class CartScreenState extends State<CartScreen> {
           payTitle,
           style: const TextStyle(
               color: AppTheme.textColorDarkGreyDK,
-              fontSize: 20.0,
+              fontSize: 16.0,
               fontWeight: FontWeight.w500),
         ),
         Text(

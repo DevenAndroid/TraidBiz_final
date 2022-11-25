@@ -55,6 +55,7 @@ class BillingAddress {
     required this.billingCountry,
     required this.billingState,
     required this.billingPhone,
+    required this.countryIsoCode,
     required this.billingEmail,
   });
    var billingFirstName;
@@ -66,6 +67,7 @@ class BillingAddress {
    var billingCountry;
    var billingState;
    var billingPhone;
+   var countryIsoCode;
    var billingEmail;
 
   BillingAddress.fromJson(Map<String, dynamic> json){
@@ -78,6 +80,7 @@ class BillingAddress {
     billingCountry = json['billing_country'];
     billingState = json['billing_state'];
     billingPhone = json['billing_phone'];
+    countryIsoCode = json['country_iso_code'];
     billingEmail = json['billing_email'];
   }
 
@@ -92,6 +95,7 @@ class BillingAddress {
     _data['billing_country'] = billingCountry;
     _data['billing_state'] = billingState;
     _data['billing_phone'] = billingPhone;
+    _data['country_iso_code'] = countryIsoCode;
     _data['billing_email'] = billingEmail;
     return _data;
   }

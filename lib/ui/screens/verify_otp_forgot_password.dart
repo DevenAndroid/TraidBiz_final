@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:dinelah/repositories/resend_otp_repository.dart';
-import 'package:dinelah/repositories/verify_otp_forgot_pass_repo.dart';
-import 'package:dinelah/res/app_assets.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/widget/common_button_white.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
-import 'package:dinelah/utils/dimensions.dart';
+import 'package:traidbiz/repositories/resend_otp_repository.dart';
+import 'package:traidbiz/repositories/verify_otp_forgot_pass_repo.dart';
+import 'package:traidbiz/res/app_assets.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/widget/common_button_white.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
+import 'package:traidbiz/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -25,6 +25,7 @@ class VerifyOTPForgotPassword extends StatefulWidget {
 class _VerifyOTPForgotPasswordState extends State<VerifyOTPForgotPassword> {
   final _formKey = GlobalKey<FormState>();
   final otpController = TextEditingController();
+  late StreamController<ErrorAnimationType> errorController;
 
   late Timer _timer;
   var resendText = 'Resend OTP';
@@ -48,6 +49,12 @@ class _VerifyOTPForgotPasswordState extends State<VerifyOTPForgotPassword> {
         }
       },
     );
+  }
+
+  @override
+  void initState() {
+    errorController = StreamController<ErrorAnimationType>();
+    super.initState();
   }
 
   @override
@@ -150,11 +157,13 @@ class _VerifyOTPForgotPasswordState extends State<VerifyOTPForgotPassword> {
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                         ],
+                        cursorColor: Colors.black26,
                         pastedTextStyle: TextStyle(
                           color: Colors.green.shade600,
                           fontWeight: FontWeight.bold,
                         ),
                         animationType: AnimationType.fade,
+                        errorAnimationController: errorController,
                         validator: (v) {
                           if (v!.isEmpty) {
                             return "OTP code Required";

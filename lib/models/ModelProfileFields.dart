@@ -31,12 +31,15 @@ class Data {
     required this.lastName,
     required this.email,
     required this.phone,
+    required this.countryCode,
     required this.profileImage,
   });
   late final String firstName;
   late final String lastName;
   late final String email;
   late final String phone;
+  late final String countryCode;
+  late final String countryISOCode;
   late final String profileImage;
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -44,6 +47,8 @@ class Data {
     lastName = json['last_name'];
     email = json['email'];
     phone = json['phone'];
+    countryCode = json['country_code'];
+    countryISOCode = json['country_iso_code'];
     profileImage = json['profile_image'];
   }
 
@@ -53,6 +58,8 @@ class Data {
     _data['last_name'] = lastName;
     _data['email'] = email;
     _data['phone'] = phone;
+    _data['country_code'] = countryCode;
+    _data['country_iso_code'] = countryISOCode;
     _data['profile_image'] = profileImage;
     return _data;
   }

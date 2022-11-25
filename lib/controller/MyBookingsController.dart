@@ -1,5 +1,5 @@
-import 'package:dinelah/models/ModelMyBookings.dart';
-import 'package:dinelah/repositories/get_my_bookings_repository.dart';
+import 'package:traidbiz/models/ModelMyBookings.dart';
+import 'package:traidbiz/repositories/get_my_bookings_repository.dart';
 import 'package:get/get.dart';
 
 class MyBookingsController extends GetxController {

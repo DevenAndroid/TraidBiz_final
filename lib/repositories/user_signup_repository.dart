@@ -3,30 +3,30 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helper/Helpers.dart';
 import '../models/ModelResponseCommon.dart';
+import '../routers/my_router.dart';
 import '../utils/ApiConstant.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-Future<ModelResponseCommon> register(
-    email,
-    mobileNumber,
-    password,
-    String socialLoginId,
-    socialType,
-    BuildContext context) async {
-
+Future<ModelResponseCommon> register(email, countryCode, countryIsoCode, mobileNumber, password,
+    String socialLoginId, socialType, BuildContext context) async {
   var map = <String, dynamic>{};
   SharedPreferences pref = await SharedPreferences.getInstance();
   map['email'] = email;
+  map['country_code'] = countryCode;
+  map['country_iso_code'] = countryIsoCode;
   map['phone'] = mobileNumber;
   map['password'] = password;
-  map['social_login_id'] = pref.getString('socialLoginId');
+  if (socialType == 'google') {
+    map['social_login_id'] = pref.getString('socialLoginId');
+  } else {
+    map['social_login_id'] = pref.getString('fbLoginId');
+  }
   map['social_type'] = socialType;
-
-  print("jsfhbfgjhfdhghjfdgfh"+pref.getString('socialLoginId').toString());
 
   OverlayEntry loader = Helpers.overlayLoader(context);
   Overlay.of(context)!.insert(loader);
@@ -36,6 +36,8 @@ Future<ModelResponseCommon> register(
     HttpHeaders.acceptHeader: 'application/json',
   };
 
+  print('REQUEST PARAM :: ' + map.toString());
+
   http.Response response = await http.post(Uri.parse(ApiUrls.registerUrl),
       body: jsonEncode(map), headers: headers);
 
@@ -43,6 +45,9 @@ Future<ModelResponseCommon> register(
     Helpers.hideLoader(loader);
     return ModelResponseCommon.fromJson(json.decode(response.body));
   } else {
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
+
     Helpers.hideLoader(loader);
     Helpers.createSnackBar(context, response.statusCode.toString());
     throw Exception(response.body);

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class CircularLoadingWidget extends StatefulWidget {
-  late double height=0.0;
+  late double height = 0.0;
 
   CircularLoadingWidget({Key? key, required this.height}) : super(key: key);
 
@@ -11,14 +11,17 @@ class CircularLoadingWidget extends StatefulWidget {
   _CircularLoadingWidgetState createState() => _CircularLoadingWidgetState();
 }
 
-class _CircularLoadingWidgetState extends State<CircularLoadingWidget> with SingleTickerProviderStateMixin {
+class _CircularLoadingWidgetState extends State<CircularLoadingWidget>
+    with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController animationController;
 
   void initState() {
     super.initState();
-    animationController = AnimationController(duration: Duration(milliseconds: 300), vsync: this);
-    CurvedAnimation curve = CurvedAnimation(parent: animationController, curve: Curves.easeOut);
+    animationController =
+        AnimationController(duration: Duration(milliseconds: 300), vsync: this);
+    CurvedAnimation curve =
+        CurvedAnimation(parent: animationController, curve: Curves.easeOut);
     animation = Tween<double>(begin: widget.height, end: 0).animate(curve)
       ..addListener(() {
         if (mounted) {
@@ -48,8 +51,9 @@ class _CircularLoadingWidgetState extends State<CircularLoadingWidget> with Sing
       opacity: animation.value / 100 > 1.0 ? 1.0 : animation.value / 100,
       child: SizedBox(
         height: animation.value,
-        child: new Center(
-          child: new CircularProgressIndicator(valueColor:AlwaysStoppedAnimation<Color>(Colors.black)),
+        child: const Center(
+          child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.black)),
         ),
       ),
     );

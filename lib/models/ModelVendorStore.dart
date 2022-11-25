@@ -147,6 +147,7 @@ class Stores {
     required this.storeName,
     required this.firstName,
     required this.lastName,
+    required this.storePhone,
     this.social,
     required this.showEmail,
     required this.address,
@@ -174,6 +175,7 @@ class Stores {
   late final dynamic storeName;
   late final dynamic firstName;
   late final dynamic lastName;
+  late final dynamic storePhone;
   late final Social? social;
   late final dynamic showEmail;
   late final dynamic address;
@@ -202,6 +204,7 @@ class Stores {
     storeName = json['store_name'];
     firstName = json['first_name'];
     lastName = json['last_name'];
+    storePhone = json['store_phone'];
     social = null;
     showEmail = json['show_email'];
     address = json['address'] ?? '';
@@ -234,6 +237,7 @@ class Stores {
     data['store_name'] = storeName;
     data['first_name'] = firstName;
     data['last_name'] = lastName;
+    data['store_phone'] = storePhone;
     data['social'] = social;
     data['show_email'] = showEmail;
     data['address'] = address;

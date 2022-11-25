@@ -1,4 +1,4 @@
-// import 'package:dinelah/models/PopularProduct.dart';
+// import 'package:traidbiz/models/PopularProduct.dart';
 // import 'package:flutter/material.dart';
 //
 // class VariationProduct {

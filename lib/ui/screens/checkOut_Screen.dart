@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:dinelah/models/ModelLogIn.dart';
-import 'package:dinelah/routers/my_router.dart';
+import 'package:traidbiz/controller/BottomNavController.dart';
+import 'package:traidbiz/models/ModelLogIn.dart';
+import 'package:traidbiz/routers/my_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,6 +21,7 @@ class Checkout extends StatefulWidget {
 }
 
 class CheckoutState extends State<Checkout> {
+  final bottomNavController = Get.put(BottomNavController());
   var cookie;
 
   RxBool isDataLoad = false.obs;
@@ -42,9 +44,9 @@ class CheckoutState extends State<Checkout> {
 
   @override
   Widget build(BuildContext context) {
-    String webUrl = "http://newtraidbiz.eoxysitsolution.com/checkout/?cookie=" +
-        cookie +
-        "&appchekout=yes";
+    String webUrl =
+        "${"https://traidbiz.com/checkout/?cookie=" + cookie}&appchekout=yes";
+    print("::::::::::::::::::::::::: cookie from check out page is $webUrl");
     return Container(
       decoration: const BoxDecoration(
         color: Color(0xfffff8f9),
@@ -59,34 +61,44 @@ class CheckoutState extends State<Checkout> {
       child: Scaffold(
         appBar: backAppBar("Checkout"),
         backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            WebView(
-              initialUrl: webUrl.toString(),
-              javascriptMode: JavascriptMode.unrestricted,
-              onPageFinished: (String url) {
-                setState(() {
-                  isDataLoad.value = true;
-                });
-              },
-              navigationDelegate: (action) {
-                if (action.url
-                    .contains('https://dinelah.eoxysitsolution.com/cart/')) {
-                  Get.offAllNamed(MyRouter.homeScreen);
-                  return NavigationDecision.prevent;
-                } else {
-                  return NavigationDecision.navigate;
-                }
-              },
-            ),
-            !isDataLoad.value
-                ? const Center(
-                    child: CupertinoActivityIndicator(
-                        animating: true,
-                        color: AppTheme.primaryColor,
-                        radius: 30))
-                : const SizedBox.shrink()
-          ],
+        body: WillPopScope(
+          onWillPop: () async {
+            bottomNavController.getData();
+            return true;
+          },
+          child: Stack(
+            children: [
+              WebView(
+                initialUrl: webUrl.toString(),
+                javascriptMode: JavascriptMode.unrestricted,
+                onPageFinished: (String url) {
+                  setState(() {
+                    isDataLoad.value = true;
+                  });
+                },
+                navigationDelegate: (action) {
+                  print('ACTION :: ' + action.url.toString());
+                  bottomNavController.getData();
+                  if (action.url.contains('key=')) {
+                    bottomNavController.getData();
+                  }
+                  if (!action.url.contains('checkout')) {
+                    Get.offAllNamed(MyRouter.customBottomBar);
+                    return NavigationDecision.prevent;
+                  } else {
+                    return NavigationDecision.navigate;
+                  }
+                },
+              ),
+              !isDataLoad.value
+                  ? const Center(
+                      child: CupertinoActivityIndicator(
+                          animating: true,
+                          color: AppTheme.primaryColor,
+                          radius: 30))
+                  : const SizedBox.shrink()
+            ],
+          ),
         ),
       ),
     );

@@ -10,6 +10,8 @@ import '../helper/Helpers.dart';
 import '../models/ModelLogIn.dart';
 import '../models/ModelResponseCommon.dart';
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
 Future<ModelResponseCommon> getBookableAddToCartData(
   BuildContext context,
@@ -69,6 +71,8 @@ Future<ModelResponseCommon> getBookableAddToCartData(
     Helpers.hideLoader(loader);
     return ModelResponseCommon.fromJson(json.decode(response.body));
   } else {
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
     Helpers.hideLoader(loader);
     Helpers.createSnackBar(context, response.statusCode.toString());
     throw Exception(response.body);

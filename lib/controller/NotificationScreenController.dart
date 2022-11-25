@@ -1,6 +1,6 @@
 
-import 'package:dinelah/models/ModelNotification.dart';
-import 'package:dinelah/repositories/get_Notification_repository.dart';
+import 'package:traidbiz/models/ModelNotification.dart';
+import 'package:traidbiz/repositories/get_Notification_repository.dart';
 import 'package:get/get.dart';
 
 class NotificationScreenController extends GetxController {

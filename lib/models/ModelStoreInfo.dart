@@ -1,4 +1,4 @@
-import 'package:dinelah/models/PopularProduct.dart';
+import 'package:traidbiz/models/PopularProduct.dart';
 
 class ModelStoreInfoData {
   ModelStoreInfoData({
@@ -56,6 +56,7 @@ class StoreInfo {
   StoreInfo({
     required this.id,
     required this.storeName,
+    required this.storePhone,
     required this.banner,
     required this.categories,
     // required this.rating,
@@ -64,6 +65,7 @@ class StoreInfo {
   });
   late final int id;
   late final String storeName;
+  late final String storePhone;
   late final String banner;
   late final List<Categories> categories;
 
@@ -75,19 +77,21 @@ class StoreInfo {
   StoreInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     storeName = json['store_name'];
+    storePhone = json['store_phone'];
     banner = json['banner'];
     categories = List.from(json['categories'])
         .map((e) => Categories.fromJson(e))
         .toList();
     // rating = Rating.fromJson(json['rating']);
     storeOpenClose = StoreOpenClose.fromJson(json['store_open_close']);
-    address = json['address'];
+    address = json['address'] == null ? "" : json['address'];
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['id'] = id;
     _data['store_name'] = storeName;
+    _data['store_phone'] = storePhone;
     _data['banner'] = banner;
     _data['categories'] = categories.map((e) => e.toJson()).toList();
     // _data['rating'] = rating.toJson();

@@ -1,5 +1,5 @@
-import 'package:dinelah/models/ModelGetOrder.dart';
-import 'package:dinelah/repositories/get_order_data_repository.dart';
+import 'package:traidbiz/models/ModelGetOrder.dart';
+import 'package:traidbiz/repositories/get_order_data_repository.dart';
 import 'package:get/get.dart';
 
 class MyOrdersController extends GetxController {

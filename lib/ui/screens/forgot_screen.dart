@@ -1,11 +1,12 @@
-import 'package:dinelah/res/app_assets.dart';
-import 'package:dinelah/res/strings.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/widget/common_button_white.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
+import 'package:traidbiz/res/app_assets.dart';
+import 'package:traidbiz/res/strings.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/widget/common_button_white.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 
 import '../../repositories/forgot_password_repository.dart';
 import '../widget/common_text_field_forgot_password.dart';
@@ -111,6 +112,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     icon: Icons.email_outlined,
                     bgColor: AppTheme.etBgColor,
                     isPassword: false,
+                    validator: (value) {
+                      return null;
+                    },
                   ),
                   addHeight(screenSize.width * .08),
                   CommonButtonWhite(

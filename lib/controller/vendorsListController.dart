@@ -1,5 +1,5 @@
-import 'package:dinelah/models/ModelVendorStore.dart';
-import 'package:dinelah/repositories/get_vendor_stores_repository.dart';
+import 'package:traidbiz/models/ModelVendorStore.dart';
+import 'package:traidbiz/repositories/get_vendor_stores_repository.dart';
 import 'package:get/get.dart';
 
 class VendorsController extends GetxController {
@@ -35,6 +35,8 @@ class VendorsController extends GetxController {
     map['sort_by'] = sortBy.value;
     map['rating'] = rating.value;
     map['nearby'] = isNearBy.value == false ? '' : true;
+
+    print("search controller map" + map.toString());
 
     getData(map);
   }

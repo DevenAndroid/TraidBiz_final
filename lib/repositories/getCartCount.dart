@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dinelah/models/ModelCartQuantity.dart';
+import 'package:traidbiz/models/ModelCartQuantity.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/ModelLogIn.dart';
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
 Future<ModelCartQuantity> getCartCount() async {
   var map = <String, dynamic>{};
@@ -26,11 +28,14 @@ Future<ModelCartQuantity> getCartCount() async {
 
   http.Response response = await http.post(Uri.parse(ApiUrls.getCartCountUrl),
       body: jsonEncode(map), headers: headers);
-  print('DATA ::' + response.body.toString());
 
+  print(response.body.toString() + "Lokesh sir api");
   if (response.statusCode == 200) {
     return ModelCartQuantity.fromJson(json.decode(response.body));
   } else {
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
+
     throw Exception(response.body);
   }
 }

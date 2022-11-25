@@ -1,63 +1,41 @@
 {
   "project_info": {
-    "project_number": "962094105233",
-    "firebase_url": "https://dinelah-fae97-default-rtdb.firebaseio.com",
-    "project_id": "dinelah-fae97",
-    "storage_bucket": "dinelah-fae97.appspot.com"
+    "project_number": "887813448269",
+    "project_id": "traidbizcustomer",
+    "storage_bucket": "traidbizcustomer.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:962094105233:android:42417678d9287af8e93530",
+        "mobilesdk_app_id": "1:887813448269:android:ac1b0d684efc8c61ed3204",
         "android_client_info": {
-          "package_name": "com.dinelah.dinelah"
+          "package_name": "com.traidbiz.traidbiz"
         }
       },
       "oauth_client": [
         {
-          "client_id": "962094105233-plgqpblcgaipdrivh5kjbeaavttuafeu.apps.googleusercontent.com",
+          "client_id": "887813448269-t3lia8o4b89sk2l2uth4gfdnc2c599ak.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.traidbiz.traidbiz",
+            "certificate_hash": "6bffe93a471d3eeb58affd709ce4cbde4a102d12"
+          }
+        },
+        {
+          "client_id": "887813448269-oo8rkqof1na69pvhofcmbno57ubctph3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCAjlemWzDiNsXUIwFV9TCqSV4ORBMpt-s"
+          "current_key": "AIzaSyAKiDjGrjbAITVBAdzLWVen3CgKFw33MjI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "962094105233-plgqpblcgaipdrivh5kjbeaavttuafeu.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:962094105233:android:f3b11ccd1743d76fe93530",
-        "android_client_info": {
-          "package_name": "com.dinelahdriver.dinelah_driver"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "962094105233-plgqpblcgaipdrivh5kjbeaavttuafeu.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCAjlemWzDiNsXUIwFV9TCqSV4ORBMpt-s"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "962094105233-plgqpblcgaipdrivh5kjbeaavttuafeu.apps.googleusercontent.com",
+              "client_id": "887813448269-oo8rkqof1na69pvhofcmbno57ubctph3.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

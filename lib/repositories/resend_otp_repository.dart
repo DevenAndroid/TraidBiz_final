@@ -1,11 +1,13 @@
 import 'dart:convert';
 
-import 'package:dinelah/helper/Helpers.dart';
-import 'package:dinelah/models/ModelResponseCommon.dart';
+import 'package:traidbiz/helper/Helpers.dart';
+import 'package:traidbiz/models/ModelResponseCommon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
 Future<ModelResponseCommon> resendOtp(email, context) async {
   var map = <String, dynamic>{};
@@ -20,6 +22,9 @@ Future<ModelResponseCommon> resendOtp(email, context) async {
     Helpers.hideLoader(loader);
     return ModelResponseCommon.fromJson(json.decode(response.body));
   } else {
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
+
     Helpers.createSnackBar(context, response.statusCode.toString());
     Helpers.hideLoader(loader);
     throw Exception(response.body);

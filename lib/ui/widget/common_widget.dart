@@ -1,8 +1,9 @@
 import 'package:badges/badges.dart';
-import 'package:dinelah/controller/BottomNavController.dart';
-import 'package:dinelah/controller/ProfileController.dart';
-import 'package:dinelah/controller/vendorsListController.dart';
-import 'package:dinelah/res/app_assets.dart';
+import 'package:traidbiz/controller/BottomNavController.dart';
+import 'package:traidbiz/controller/ProfileController.dart';
+import 'package:traidbiz/controller/SearchController.dart';
+import 'package:traidbiz/controller/vendorsListController.dart';
+import 'package:traidbiz/res/app_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,8 +21,9 @@ Widget searchView(BuildContext context, onTap, searchController) {
       controller: searchController,
       style: const TextStyle(fontSize: 17),
       textAlignVertical: TextAlignVertical.center,
-      textInputAction: TextInputAction.search,
+      textInputAction: TextInputAction.done,
       onSubmitted: (value) => onTap(),
+      // onChanged: (value) => onTap(),
       decoration: InputDecoration(
         filled: true,
         prefixIcon: Icon(
@@ -34,7 +36,7 @@ Widget searchView(BuildContext context, onTap, searchController) {
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                   color: AppTheme.primaryColor,
-                  borderRadius: BorderRadius.circular(15)),
+                  borderRadius: BorderRadius.circular(5)),
               child: const Icon(
                 Icons.search,
                 size: 18,
@@ -46,7 +48,7 @@ Widget searchView(BuildContext context, onTap, searchController) {
             borderRadius: BorderRadius.all(Radius.circular(8))),
         fillColor: Colors.white,
         contentPadding: EdgeInsets.zero,
-        hintText: 'Search Your Food',
+        hintText: 'Search',
       ),
     ),
   );
@@ -125,7 +127,9 @@ AppBar backAppBar(title) {
               final controller = Get.put(VendorsController());
               controller.getResetData();
             }
-            cartController.getData();
+            if (title == 'Checkout') {
+              cartController.getData();
+            }
             Get.back();
           },
           icon: Image.asset(
@@ -164,7 +168,7 @@ AppBar backAppBar(title) {
             }),
             child: InkWell(
               onTap: () {
-                Get.to(CustomNavigationBar(
+                Get.to(const CustomNavigationBar(
                   index: 1,
                 ));
               },

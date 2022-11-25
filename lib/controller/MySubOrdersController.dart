@@ -1,5 +1,5 @@
-import 'package:dinelah/models/ModelSingleOrder.dart';
-import 'package:dinelah/repositories/get_single_order_repository.dart';
+import 'package:traidbiz/models/ModelSingleOrder.dart';
+import 'package:traidbiz/repositories/get_single_order_repository.dart';
 import 'package:get/get.dart';
 
 class MySubOrdersController extends GetxController {

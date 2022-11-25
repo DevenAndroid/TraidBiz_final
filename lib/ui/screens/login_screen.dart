@@ -1,24 +1,23 @@
 import 'dart:convert';
 
 import 'package:client_information/client_information.dart';
-import 'package:dinelah/helper/Helpers.dart';
-import 'package:dinelah/repositories/get_social_data_repository.dart';
-import 'package:dinelah/repositories/user_login_repository.dart';
-import 'package:dinelah/res/app_assets.dart';
-import 'package:dinelah/res/strings.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/widget/common_button.dart';
-import 'package:dinelah/ui/widget/common_text_field.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
+import 'package:traidbiz/repositories/get_social_data_repository.dart';
+import 'package:traidbiz/repositories/user_login_repository.dart';
+import 'package:traidbiz/res/app_assets.dart';
+import 'package:traidbiz/res/strings.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/widget/common_button.dart';
+import 'package:traidbiz/ui/widget/common_text_field.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -50,6 +49,12 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     _getClientInformation();
+    // InternetConnectionChecker().onStatusChange.listen((status) {
+    //   final connected = status == InternetConnectionStatus.connected;
+    //   showSimpleNotification(
+    //       Text(connected ? 'Connected to internet' : "NO INTERNET FOUND"),
+    //       background: Colors.red);
+    // });
   }
 
   Future<void> _getClientInformation() async {
@@ -79,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Container(
               height: MediaQuery.of(context).size.height,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(
                     AppAssets.logInBg,
@@ -93,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
               right: 50,
               child: InkWell(
                 onTap: () {
-                  Get.toNamed(MyRouter.customBottomBar);
+                  // Get.toNamed(MyRouter.customBottomBar);
                 },
                 child: Image.asset(
                   AppAssets.logoWelcome,
@@ -147,8 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             children: [
                                               Expanded(
                                                 child: TextFormField(
-                                                  controller:
-                                                      passwordController,
+                                                  controller: passwordController,
                                                   obscureText:
                                                       isPasswordShow.value,
                                                   autofillHints: const [
@@ -163,10 +167,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                                       } else if (value.length <
                                                           4) {
                                                         return 'Password must be greater then 6';
-                                                      } else if (value.length >
-                                                          16) {
-                                                        return 'Password must be less then 16';
                                                       }
+
+                                                      // else if (value.length >
+                                                      //     16) {
+                                                      //   return 'Password must be less then 16';
+                                                      // }
+
                                                     } else {
                                                       if (value!
                                                           .trim()
@@ -185,8 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   textInputAction:
                                                       TextInputAction.done,
                                                   decoration: InputDecoration(
-                                                      hintText:
-                                                          Strings.password,
+                                                      hintText: Strings.password,
                                                       counterText: "",
                                                       filled: true,
                                                       fillColor: AppTheme
@@ -280,34 +286,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                             .getToken();
                                         if (loginFormKey.currentState!
                                             .validate()) {
+                                          // ignore: use_build_context_synchronously
                                           createLogin(
-                                                  userNameController.text,
-                                                  passwordController.text,
-                                                  _clientInfo.deviceId
-                                                      .toString(),
-                                                  fcmToken.toString(),
-                                                  context)
-                                              .then((value) async {
+                                            userNameController.text,
+                                            passwordController.text,
+                                            _clientInfo.deviceId.toString(),
+                                            fcmToken.toString(),
+                                            context,
+                                          ).then((value) async {
                                             if (value.status == true) {
-                                              showToast(
-                                                  'user login sucessfull redirecting to login screen');
-                                              SharedPreferences pref =
-                                                  await SharedPreferences
-                                                      .getInstance();
-                                              pref.setString('user',
-                                                  jsonEncode(value.data));
+                                              SharedPreferences pref = await SharedPreferences.getInstance();
+                                              pref.setString('user', jsonEncode(value.data));
 
                                               controller.getUser();
 
                                               if (Get.arguments != null) {
-                                                print("errorrrrrr  1login");
-                                                Get.offAndToNamed(
-                                                    MyRouter.customBottomBar);
+                                                Get.offAndToNamed(MyRouter.customBottomBar);
+                                                showToast(value.message);
                                               } else {
-                                                Get.offAndToNamed(
-                                                    MyRouter.customBottomBar);
-
-                                                print("errorrrrrr login");
+                                                Get.back();
                                               }
                                             } else {
                                               Get.defaultDialog(
@@ -335,14 +332,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         }
                                       },
                                     ),
-                                    addHeight(16),
-                                    Row(
-                                      children: const [
-                                        Expanded(child: Divider()),
-                                        Text('  or  '),
-                                        Expanded(child: Divider()),
-                                      ],
-                                    ),
+                                    // addHeight(16),
+                                    // Row(
+                                    //   children: const [
+                                    //     Expanded(child: Divider()),
+                                    //     Text('  or  '),
+                                    //     Expanded(child: Divider()),
+                                    //   ],
+                                    // ),
                                     addHeight(16),
                                     Row(
                                       mainAxisAlignment:
@@ -350,7 +347,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                            signInWithGoogle();
+                                            signInWithGoogle1();
                                           },
                                           child: Container(
                                             height: 38,
@@ -369,24 +366,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                           ),
                                         ),
                                         addWidth(30),
-                                        // InkWell(
-                                        //   onTap: () => signInFaceBook(),
-                                        //   child: Container(
-                                        //     height: 38,
-                                        //     width: 38,
-                                        //     decoration: BoxDecoration(
-                                        //       borderRadius:
-                                        //           BorderRadius.circular(5),
-                                        //       color: AppTheme.textColorSkyBLue,
-                                        //     ),
-                                        //     child: const Center(
-                                        //         child: FaIcon(
-                                        //       FontAwesomeIcons.facebookF,
-                                        //       size: 18,
-                                        //       color: Colors.white,
-                                        //     )),
-                                        //   ),
-                                        // ),
+                                        InkWell(
+                                          onTap: () => signInFaceBook(),
+                                          child: Container(
+                                            height: 38,
+                                            width: 38,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: AppTheme.textColorSkyBLue,
+                                            ),
+                                            child: const Center(
+                                                child: FaIcon(
+                                              FontAwesomeIcons.facebookF,
+                                              size: 18,
+                                              color: Colors.white,
+                                            )),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ],
@@ -450,7 +447,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<UserCredential> signInWithGoogle() async {
+  //original
+  Future<UserCredential> signInWithGoogle1() async {
+    print("googleLogin method Called DINESH");
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication googleAuth =
         await googleUser!.authentication;
@@ -458,20 +457,22 @@ class _LoginScreenState extends State<LoginScreen> {
       idToken: googleUser.id.toString(),
       accessToken: googleAuth.accessToken,
     );
-    showToast(googleUser.id.toString());
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setString('socialLoginId', googleUser.id.toString());
 
-    getSocialLogin(context, googleUser.id.toString(), "google")
-        .then((value) async {
+    getSocialLogin(
+      context,
+      googleUser.id.toString(),
+      "google",
+    ).then((value) async {
       if (value.status) {
-        Fluttertoast.showToast(msg: value.message.toString());
+        showToast(" login done userid is ${googleUser.id}");
+        showToast(value.message);
         SharedPreferences pref = await SharedPreferences.getInstance();
         pref.setString('user', jsonEncode(value.data));
         Get.offAndToNamed(MyRouter.customBottomBar);
       } else {
-        Fluttertoast.showToast(
-            msg: 'Email id not registered, please signUp first');
+        showToast(value.message);
         Get.offAndToNamed(MyRouter.signUpScreen, arguments: [
           googleUser.id.toString(),
           googleUser.email.toString(),
@@ -484,27 +485,44 @@ class _LoginScreenState extends State<LoginScreen> {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  // Future<UserCredential> signInFaceBook() async {
-  //   // User? firebaseUser;
-  //
-  //   final LoginResult loginResult =
-  //       await FacebookAuth.instance.login(permissions: ['email']);
-  //
-  //   if (loginResult == LoginStatus.success) {
-  //     // final userData = await FacebookAuth.instance.getUserData();
-  //
-  //     // _userData = userData;
-  //   } else {
-  //     // print(loginResult.message);
-  //   }
-  //
-  //   final OAuthCredential oAuthCredential =
-  //       FacebookAuthProvider.credential(loginResult.accessToken!.token);
-  //
-  //   // final userData = await FacebookAuth.instance.getUserData();
-  //
-  //   // print("facebook userData::::::::=> "+userData.toString());
-  //
-  //   return FirebaseAuth.instance.signInWithCredential(oAuthCredential);
-  // }
+  Future<UserCredential> signInFaceBook() async {
+    final LoginResult loginResult =
+        await FacebookAuth.instance.login(permissions: ['email']);
+
+    if (loginResult == LoginStatus.success) {
+    } else {}
+
+    final OAuthCredential oAuthCredential =
+        FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+    final userData = await FacebookAuth.instance.getUserData();
+
+    print("acess token is  ::::::::::$userData");
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('fbLoginId', userData['id'].toString());
+
+    print("acess token is kkkkkkkkk  ::::::::::${userData['id']}");
+    getSocialLogin(context, userData['id'].toString(), "facebook")
+        .then((value) async {
+      if (value.status == true) {
+        Fluttertoast.showToast(msg: value.message.toString());
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        pref.setString('user', jsonEncode(value.data));
+        Get.offAndToNamed(MyRouter.customBottomBar);
+      } else {
+        Fluttertoast.showToast(
+            msg: 'Email id not registered, please signUp first');
+        Get.offAndToNamed(MyRouter.signUpScreen, arguments: [
+          userData['id'].toString(),
+          userData['email'].toString(),
+          userData['name'].toString(),
+          'facebook'
+        ]);
+      }
+      return null;
+    });
+
+    return FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+  }
 }

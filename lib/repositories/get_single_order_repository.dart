@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/ModelLogIn.dart';
 import '../models/ModelSingleOrder.dart';
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
 Future<ModelSingleOrderData> getSingleOrderData(orderId) async {
   SharedPreferences pref = await SharedPreferences.getInstance();
@@ -14,9 +16,15 @@ Future<ModelSingleOrderData> getSingleOrderData(orderId) async {
       ModelLogInData.fromJson(jsonDecode(pref.getString('user')!));
   var map = <String, dynamic>{};
   map['cookie'] = user.cookie;
-  print('getSingleOrderData cookie' + user.cookie);
   map['order_id'] = orderId;
-
+  if (pref.getString('user') != null) {
+    ModelLogInData? user =
+        ModelLogInData.fromJson(jsonDecode(pref.getString('user')!));
+    map['cookie'] = user.cookie;
+    print("CATEGORY SCREEN COOKIES " + user.cookie.toString());
+  } else {
+    map['cookie'] = pref.getString('deviceId');
+  }
   final headers = {
     HttpHeaders.contentTypeHeader: 'application/json',
     HttpHeaders.acceptHeader: 'application/json',
@@ -29,13 +37,11 @@ Future<ModelSingleOrderData> getSingleOrderData(orderId) async {
       body: jsonEncode(map), headers: headers);
 
   if (response.statusCode == 200) {
-    // Helpers.hideLoader(loader);
-    print("<<<<<<<getSingleOrderData from repository=======>" +
-        response.body.toString());
     return ModelSingleOrderData.fromJson(json.decode(response.body));
   } else {
-    // Helpers.hideLoader(loader);
-    // Helpers.createSnackBar(context, response.statusCode.toString());
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
+
     throw Exception(response.body);
   }
 }

@@ -8,6 +8,9 @@ class ModelProduct {
     required this.type,
     required this.description,
     required this.shortDescription,
+    required this.shipping_policy,
+    required this.refund_policy,
+    required this.cancellation_policy,
     required this.price,
     required this.regularPrice,
     required this.salePrice,
@@ -32,6 +35,7 @@ class ModelProduct {
     required this.imageUrl,
     required this.attributeData,
   });
+
   dynamic id;
   dynamic name;
   dynamic slug;
@@ -40,6 +44,9 @@ class ModelProduct {
   dynamic type;
   dynamic description;
   dynamic shortDescription;
+  dynamic shipping_policy;
+  dynamic refund_policy;
+  dynamic cancellation_policy;
   dynamic price;
   dynamic regularPrice;
   dynamic salePrice;
@@ -73,6 +80,9 @@ class ModelProduct {
     type = json['type'];
     description = json['description'];
     shortDescription = json['short_description'];
+    shipping_policy = json['shipping_policy'];
+    refund_policy = json['refund_policy'];
+    cancellation_policy = json['cancellation_policy'];
     price = json['price'];
     regularPrice = json['regular_price'];
     salePrice = json['sale_price'];
@@ -110,6 +120,9 @@ class ModelProduct {
     _data['type'] = type;
     _data['description'] = description;
     _data['short_description'] = shortDescription;
+    _data['shipping_policy'] = shipping_policy;
+    _data['refund_policy'] = refund_policy;
+    _data['cancellation_policy'] = cancellation_policy;
     _data['price'] = price;
     _data['regular_price'] = regularPrice;
     _data['sale_price'] = salePrice;
@@ -133,6 +146,7 @@ class ModelProduct {
     _data['category_slug'] = categorySlug;
     _data['image_url'] = imageUrl;
     _data['attribute_data'] = attributeData.map((e) => e.toJson()).toList();
+
     return _data;
   }
 }
@@ -147,13 +161,18 @@ class AttributeData {
 
   AttributeData.fromJson(Map<String, dynamic> json) {
     name = json['name'];
-    items = List.from(json['items']).map((e) => Items.fromJson(e)).toList();
+    if (json['items'] != null) {
+      items = List.from(json['items']).map((e) => Items.fromJson(e)).toList();
+    } else {
+      items = [];
+    }
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['name'] = name;
     _data['items'] = items.map((e) => e.toJson()).toList();
+
     return _data;
   }
 }

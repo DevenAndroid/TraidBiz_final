@@ -2,15 +2,14 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:dinelah/res/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../res/theme/theme.dart';
+
 class ApiUrls {
-  static const String apiBaseUrl =
-      'http://newtraidbiz.eoxysitsolution.com/wp-json/api/';
-  // 'https://dinelah.eoxysitsolution.com/wp-json/api/';
+  static const String apiBaseUrl = 'https://traidbiz.com/wp-json/api/';
   static const String loginUrl =
       "${apiBaseUrl}woocustomer/generate_auth_cookie/";
   static const String registerUrl = "${apiBaseUrl}woocustomer/register";
@@ -18,6 +17,8 @@ class ApiUrls {
       "${apiBaseUrl}woocustomer/forgot_password";
   static const String vendorStoresUrl = "${apiBaseUrl}vendor/stores";
   static const String homeDataUrl = "${apiBaseUrl}woohomepage/get_home_data";
+  static const String verifySignUpUserEmail =
+      "${apiBaseUrl}woocustomer/email_verification";
   static const String getCartUrl = "${apiBaseUrl}woocustomer/get_cart";
   static const String getUpdateCartUrl = "${apiBaseUrl}woocustomer/update_cart";
   static const String getOrdersUrl = "${apiBaseUrl}woocustomer/get_orders";
@@ -30,8 +31,9 @@ class ApiUrls {
   static const String getAddressUrl = "${apiBaseUrl}woocustomer/get_addresses";
   static const String updateAddressUrl =
       "${apiBaseUrl}woocustomer/update_addresses";
-  static const String changePasswordUrl =
-      "${apiBaseUrl}woocustomer/change_password";
+  static const String changePasswordUrl = "${apiBaseUrl}woocustomer/change_password";
+  static const String getSocialLinksUrl = "${apiBaseUrl}woocustomer/get_social_links";
+
   static const String getSingleProductUrl = "${apiBaseUrl}woo_api/get_product";
   static const String getProductVariationUrl =
       "${apiBaseUrl}woo_api/get_product_variations";
@@ -72,6 +74,12 @@ class ApiUrls {
   static const String updatePasswordUrl =
       "${apiBaseUrl}woocustomer/reset_password";
   static const String resendOtp = "${apiBaseUrl}woocustomer/resend_otp";
+  static const String resendVerifyEmailOtp =
+      "${apiBaseUrl}woocustomer/register_email_resend_otp";
+  static const String multiCurrencyList =
+      "${apiBaseUrl}woo_api/multicurrency_list";
+  static const String updateUserCurrency =
+      "${apiBaseUrl}woo_api/update_user_currency";
 }
 
 logPrint(String logis) {

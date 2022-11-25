@@ -9,12 +9,23 @@ import '../helper/Helpers.dart';
 import '../models/ModelGetProductVariation.dart';
 import '../models/ModelLogIn.dart';
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
-Future<ModelGetProductVariationData> getProductVariationsData(BuildContext context, productId ) async {
-
+Future<ModelGetProductVariationData> getProductVariationsData(
+    BuildContext context, productId) async {
   SharedPreferences pref = await SharedPreferences.getInstance();
-  ModelLogInData? user = ModelLogInData.fromJson(jsonDecode(pref.getString('user')!));
+  ModelLogInData? user =
+      ModelLogInData.fromJson(jsonDecode(pref.getString('user')!));
   var map = <String, dynamic>{};
+  if (pref.getString('user') != null) {
+    ModelLogInData? user =
+        ModelLogInData.fromJson(jsonDecode(pref.getString('user')!));
+    map['cookie'] = user.cookie;
+    print("CATEGORY SCREEN COOKIES " + user.cookie.toString());
+  } else {
+    map['cookie'] = pref.getString('deviceId');
+  }
   map['product_id'] = productId;
 
   final headers = {
@@ -22,19 +33,18 @@ Future<ModelGetProductVariationData> getProductVariationsData(BuildContext conte
     HttpHeaders.acceptHeader: 'application/json',
   };
 
-  // OverlayEntry loader = Helpers.overlayLoader(context);
-  // Overlay.of(context)!.insert(loader);
-
-  http.Response response = await http.post(Uri.parse(ApiUrls.getProductVariationUrl),
-      body: jsonEncode(map), headers: headers);
+  http.Response response = await http.post(
+      Uri.parse(ApiUrls.getProductVariationUrl),
+      body: jsonEncode(map),
+      headers: headers);
 
   if (response.statusCode == 200) {
-    // Helpers.hideLoader(loader);
-    print("<<<<<<<getSingleProductData from repository=======>"+response.body.toString());
     return ModelGetProductVariationData.fromJson(json.decode(response.body));
   } else {
-    // Helpers.hideLoader(loader);
-    Helpers.createSnackBar(context, response.statusCode.toString());
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
+
+    // Helpers.createSnackBar(context, response.statusCode.toString());
     throw Exception(response.body);
   }
 }

@@ -1,3 +1,5 @@
+import 'package:traidbiz/models/PopularProduct.dart';
+
 class ModelSearchProduct {
   ModelSearchProduct({
     this.status,
@@ -31,12 +33,13 @@ class Data {
     required this.products,
   });
   // late final int count;
-  late final List<Products> products;
+  late final List<ModelProduct> products;
 
   Data.fromJson(Map<String, dynamic> json) {
     // count = json['count'];
-    products =
-        List.from(json['products']).map((e) => Products.fromJson(e)).toList();
+    products = List.from(json['products'])
+        .map((e) => ModelProduct.fromJson(e))
+        .toList();
   }
 
   Map<String, dynamic> toJson() {

@@ -1,5 +1,5 @@
-import 'package:dinelah/models/ModelCartQuantity.dart';
-import 'package:dinelah/repositories/getCartCount.dart';
+import 'package:traidbiz/models/ModelCartQuantity.dart';
+import 'package:traidbiz/repositories/getCartCount.dart';
 import 'package:get/get.dart';
 
 class BottomNavController extends GetxController {

@@ -88,6 +88,7 @@ class Orders {
     required this.image,
     required this.currencySymbol,
     required this.hasSuborder,
+    required this.orderPdf,
   });
   late final int id;
   late final int parentId;
@@ -123,6 +124,7 @@ class Orders {
   late final String image;
   late final String currencySymbol;
   late final bool hasSuborder;
+  late final String orderPdf;
 
   Orders.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -159,6 +161,7 @@ class Orders {
     image = json['image'];
     currencySymbol = json['currency_symbol'];
     hasSuborder = json['has_suborder'];
+    orderPdf = json['order_pdf'];
   }
 
   Map<String, dynamic> toJson() {
@@ -197,6 +200,7 @@ class Orders {
     _data['image'] = image;
     _data['currency_symbol'] = currencySymbol;
     _data['has_suborder'] = hasSuborder;
+    _data['order_pdf'] = orderPdf;
     return _data;
   }
 }

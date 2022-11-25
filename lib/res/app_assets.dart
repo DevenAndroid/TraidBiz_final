@@ -1,6 +1,7 @@
 class AppAssets {
   static const String appSplashLogo = 'assets/images/img_splash_logo.png';
   static const String splashBg = 'assets/images/img_welcome.png';
+  static const String splashBgNew = 'assets/images/img_welcome_new.png';
   static const String logInLogo = 'assets/images/app-icon.png';
   static const String forgotLogo = 'assets/images/forgotLock.png';
   static const String logInBg = 'assets/images/img_screen_bg.png';
@@ -27,11 +28,14 @@ class AppAssets {
   static const String radioUncheck = 'assets/images/radio_un_check.png';
 
   static const String imgNoData = 'assets/images/img_no_data.jpg';
+  static const String imgServerError = 'assets/images/img_server_error.png';
+  static const String imgErrorOops = 'assets/images/img_error_oops.png';
+
+  //AppBarIcons
 
   //AppBarIcons
   static const String drawerIcon = 'assets/images/menu_icon.png';
   static const String backIcon = 'assets/images/back_Icon.png';
-
   //BottomNavBar Images
   static const String homeBottomNav = 'assets/images/app-icon.png';
   // static const String hostGrey = 'assets/images/host_grey.png';

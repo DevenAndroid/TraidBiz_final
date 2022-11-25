@@ -1,16 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dinelah/controller/BottomNavController.dart';
-import 'package:dinelah/helper/Helpers.dart';
-import 'package:dinelah/models/PopularProduct.dart';
-import 'package:dinelah/repositories/get_update_cart_repository.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/ui/screens/item/ItemVariationBottomSheet.dart';
-import 'package:dinelah/ui/widget/common_button.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:traidbiz/controller/BottomNavController.dart';
+import 'package:traidbiz/helper/Helpers.dart';
+import 'package:traidbiz/models/PopularProduct.dart';
+import 'package:traidbiz/repositories/get_update_cart_repository.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/ui/screens/item/ItemVariationBottomSheet.dart';
+import 'package:traidbiz/ui/widget/common_button.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 
 import '../../res/app_assets.dart';
 
@@ -38,17 +39,91 @@ class SingleProductScreenState extends State<SingleProductScreen> {
   @override
   Widget build(BuildContext context) {
     // final screenSize = MediaQuery.of(context).size;
+    print('object is here' + model.storeName.toString());
+    print('rating is is is is si si ' + model.averageRating.toString());
     return Container(
       decoration: const BoxDecoration(
-          color: Color(0xfffff8f9),
           image: DecorationImage(
-            image: AssetImage(
-              AppAssets.singleProductShapeBg,
-            ),
-            alignment: Alignment.topRight,
-            fit: BoxFit.contain,
-          )),
+        image: AssetImage(
+          AppAssets.singleProductShapeBg,
+        ),
+        alignment: Alignment.topRight,
+        fit: BoxFit.cover,
+      )),
       child: Scaffold(
+          bottomSheet: Container(
+            alignment: Alignment.center,
+            height: 88,
+            color: Colors.transparent,
+            child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 5,
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: (model.manageStock.toString() != "1")
+                          ? CommonButton(
+                              buttonHeight: 6.5,
+                              buttonWidth: 75,
+                              text: 'ADD TO CART',
+                              onTap: () {
+                                if (model.type.toString() == "simple") {
+                                  ++bottomNavController.cartBadgeCount.value;
+                                  getUpdateCartData(context, model.id, 1)
+                                      .then((value) {
+                                    if (value.status) {
+                                      bottomNavController.getData();
+                                      Get.back();
+                                      Helpers.createSnackBar(
+                                          context, value.message.toString());
+                                    } else {}
+                                    return null;
+                                  });
+                                } else {
+                                  _getVariationBottomSheet(model);
+                                }
+                              },
+                              mainGradient: AppTheme.primaryGradientColor)
+                          : ((model.stockQuantity.toString() != "0")
+                              ? CommonButton(
+                                  buttonHeight: 6.5,
+                                  buttonWidth: 75,
+                                  text: 'ADD TO CART',
+                                  onTap: () {
+                                    if (model.type.toString() == "simple") {
+                                      ++bottomNavController
+                                          .cartBadgeCount.value;
+                                      getUpdateCartData(context, model.id, 1)
+                                          .then((value) {
+                                        if (value.status) {
+                                          bottomNavController.getData();
+                                          Get.back();
+                                          Helpers.createSnackBar(context,
+                                              value.message.toString());
+                                        } else {}
+                                        return null;
+                                      });
+                                    } else {
+                                      _getVariationBottomSheet(model);
+                                    }
+                                  },
+                                  mainGradient: AppTheme.primaryGradientColor)
+                              : CommonButton(
+                                  buttonHeight: 6.5,
+                                  buttonWidth: 75,
+                                  text: 'Out of Stock',
+                                  onTap: () {
+                                    showToast(
+                                        "we will notify you when product come back in stock");
+                                  },
+                                  mainGradient: AppTheme.primaryGradientColor)),
+                    )
+                  ],
+                )),
+          ),
           appBar: backAppBar(""),
           backgroundColor: Colors.transparent,
           body: SingleChildScrollView(
@@ -59,7 +134,7 @@ class SingleProductScreenState extends State<SingleProductScreen> {
                   addHeight(4),
                   Align(
                     alignment: Alignment.center,
-                    child: Hero(
+                   /* child: Hero(
                       tag: model.imageUrl,
                       child: Material(
                         borderRadius: BorderRadius.circular(100),
@@ -77,7 +152,7 @@ class SingleProductScreenState extends State<SingleProductScreen> {
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     image: imageProvider,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
                               ),
@@ -90,41 +165,48 @@ class SingleProductScreenState extends State<SingleProductScreen> {
                               errorWidget: (context, url, error) =>
                                   const Icon(Icons.error),
                             ),
-                            // Image.network(
-                            //   model.imageUrl,
-                            //   loadingBuilder: (BuildContext context,
-                            //       Widget child,
-                            //       ImageChunkEvent? loadingProgress) {
-                            //     if (loadingProgress == null) {
-                            //       return child;
-                            //     }
-                            //     return Center(
-                            //       child: Padding(
-                            //         padding: const EdgeInsets.only(
-                            //             top: 10.0, bottom: 10.0),
-                            //         child: CircularProgressIndicator(
-                            //           color: AppTheme.primaryColor,
-                            //           value:
-                            //               loadingProgress.expectedTotalBytes !=
-                            //                       null
-                            //                   ? loadingProgress
-                            //                           .cumulativeBytesLoaded /
-                            //                       loadingProgress
-                            //                           .expectedTotalBytes!
-                            //                   : null,
-                            //         ),
-                            //       ),
-                            //     );
-                            //   },
-                            //   fit: BoxFit.cover,
-                            // ),
+                          ),
+                        ),
+                      ),
+                    ),*/
+                    child: Hero(
+                      tag: model.imageUrl,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(100),
+                        elevation: 3,
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.width*0.6,
+                          width: MediaQuery.of(context).size.height,
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.all(Radius.circular(4)),
+                            child: CachedNetworkImage(
+                              imageUrl: model.imageUrl,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) => Container(
+                                  height: 4,
+                                  width: 4,
+                                  child: const CircularProgressIndicator(
+                                    color: AppTheme.primaryColor,
+                                  )),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                  addHeight(24),
+                  addHeight(8),
                   Container(
+                    width: MediaQuery.of(context).size.width,
                     // height: MediaQuery.of(context).size.height,
                     padding: const EdgeInsets.only(
                         left: 16.0, right: 16.0, top: 32.0),
@@ -151,7 +233,7 @@ class SingleProductScreenState extends State<SingleProductScreen> {
                         Row(
                           children: [
                             const Text(
-                              'From',
+                              'From: ',
                               style: TextStyle(
                                   fontSize: 18.0,
                                   height: 1.5,
@@ -224,18 +306,100 @@ class SingleProductScreenState extends State<SingleProductScreen> {
                                   color: Colors.grey),
                             ),
                             addWidth(10),
-                            Text(
-                              model.stockQuantity.toString().isEmpty
-                                  ? "0 Dishes"
-                                  : model.stockQuantity.toString() + ' Dishes',
-                              style: TextStyle(
-                                  fontSize: 20.0,
-                                  height: 1.5,
-                                  color: AppTheme.textColorSkyBLue),
-                            ),
+                            (model.manageStock.toString() == "1" ||
+                                    model.manageStock == true)
+                                ? Text(
+                                    (model.stockQuantity.toString() != "0")
+                                        ? model.stockQuantity.toString()
+                                        : 'Out of Stock',
+                                    style: const TextStyle(
+                                        fontSize: 20.0,
+                                        height: 1.5,
+                                        color: AppTheme.textColorSkyBLue),
+                                  )
+                                : Text(
+                                    model.stockQuantity.toString(),
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        height: 1.5,
+                                        color: AppTheme.textColorSkyBLue),
+                                  ),
                           ],
                         ),
                         addHeight(20),
+                        const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text('Policies',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              height: 1.5,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.textColorDarkGreyDK),)),
+                        addHeight(8),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              InkWell(
+                                onTap: (){
+                                  Get.defaultDialog(
+                                    title: "Shipping Policy",
+                                    content: Html(
+                                      data: model.shipping_policy.toString(),
+                                    )
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    Text('1. Shipping Policy',style: TextStyle(decoration: TextDecoration.underline
+                                    ),),
+                                    Icon(Icons.arrow_forward,size: 16,)
+                                  ],
+                                ),
+                              ),
+                              addHeight(8),
+                              InkWell(
+                                onTap: (){
+                                  Get.defaultDialog(
+                                      title: "Refund Policy",
+                                      content: Html(
+                                        data: model.refund_policy.toString(),
+                                      )
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    Text('2. Refund Policy',style: TextStyle(decoration: TextDecoration.underline
+                                    ),),
+                                    Icon(Icons.arrow_forward,size: 16,)
+                                  ],
+                                ),
+                              ),
+                              addHeight(8),
+                              InkWell(
+                                onTap: (){
+                                  Get.defaultDialog(
+                                      title: "Cancellation Policy",
+                                      content: Html(
+                                        data: model.cancellation_policy.toString(),
+                                      )
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    Text('3. Cancellation Policy',style: TextStyle(decoration: TextDecoration.underline
+                                    ),),
+                                    Icon(Icons.arrow_forward,size: 16,)
+                                  ],
+                                ),
+                              ),
+
+
+                            ],
+                          ),
+                        ),
+                        addHeight(12),
                         const Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -248,35 +412,18 @@ class SingleProductScreenState extends State<SingleProductScreen> {
                           ),
                         ),
                         addHeight(12),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Html(
-                            data: model.description.toString(),
-                          ),
-                        ),
-                        addHeight(40.0),
-                        CommonButton(
-                            buttonHeight: 6.5,
-                            buttonWidth: 75,
-                            text: 'ADD TO CART',
-                            onTap: () {
-                              if (model.type.toString() == "simple") {
-                                ++bottomNavController.cartBadgeCount.value;
-                                getUpdateCartData(context, model.id, 1)
-                                    .then((value) {
-                                  if (value.status) {
-                                    Get.back();
-                                    Helpers.createSnackBar(
-                                        context, value.message.toString());
-                                  } else {}
-                                  return null;
-                                });
-                              } else {
-                                _getVariationBottomSheet(model);
-                              }
-                            },
-                            mainGradient: AppTheme.primaryGradientColor),
-                        addHeight(20.0),
+                        model.description.toString().isEmpty
+                            ? const SizedBox(
+                                height: 170,
+                              )
+                            : FittedBox(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Html(
+                                    data: model.description.toString(),
+                                  ),
+                                ),
+                              ),
                       ],
                     ),
                   ),

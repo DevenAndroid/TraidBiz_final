@@ -1,5 +1,5 @@
-import 'package:dinelah/res/size_config.dart';
-import 'package:dinelah/res/theme/theme.dart';
+import 'package:traidbiz/res/size_config.dart';
+import 'package:traidbiz/res/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

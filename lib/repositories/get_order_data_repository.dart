@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/ModelGetOrder.dart';
 import '../models/ModelLogIn.dart';
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
 Future<ModelGetOrdersData> getOrdersData() async {
   var map = <String, dynamic>{};
@@ -31,6 +33,9 @@ Future<ModelGetOrdersData> getOrdersData() async {
   if (response.statusCode == 200) {
     return ModelGetOrdersData.fromJson(json.decode(response.body));
   } else {
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
+
     throw Exception(response.body);
   }
 }

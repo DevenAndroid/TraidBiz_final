@@ -1,11 +1,11 @@
-import 'package:dinelah/controller/BottomNavController.dart';
-import 'package:dinelah/models/ModelAllAttrubutes.dart';
-import 'package:dinelah/models/PopularProduct.dart';
-import 'package:dinelah/repositories/get_update_cart_repository.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/ui/widget/common_button.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
+import 'package:traidbiz/controller/BottomNavController.dart';
+import 'package:traidbiz/models/ModelAllAttrubutes.dart';
+import 'package:traidbiz/models/PopularProduct.dart';
+import 'package:traidbiz/repositories/get_update_cart_repository.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/ui/widget/common_button.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
@@ -40,27 +40,31 @@ class ItemVariationBottomSheetState extends State<ItemVariationBottomSheet> {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Container(
-          margin: EdgeInsets.only(top: 50),
+          margin: EdgeInsets.only(top: 10),
           // height: MediaQuery.of(context).size.height * 0.8,
           color: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              InkWell(
-                onTap: () => Get.back(),
-                child: const Align(
-                    alignment: Alignment.centerRight, child: Icon(Icons.clear)),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      popularProduct.name,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () => Get.back(),
+                    child: const Align(
+                        alignment: Alignment.centerRight,
+                        child: Icon(Icons.clear)),
+                  ),
+                ],
               ),
-              addHeight(8),
-              Text(
-                popularProduct.name,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              addHeight(8),
-
-              //description removed by dk
+              // description removed by dk
               // Html(
               //   data: popularProduct.description,
               // ),
@@ -70,6 +74,7 @@ class ItemVariationBottomSheetState extends State<ItemVariationBottomSheet> {
                   itemCount: popularProduct.attributeData.length,
                   //snapshot.data!.data[0].attributes.length,
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (BuildContext context, index) {
                     return attributeList(
                         popularProduct.attributeData[index],
@@ -81,83 +86,85 @@ class ItemVariationBottomSheetState extends State<ItemVariationBottomSheet> {
               addHeight(8),
               Row(
                 children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(5.0)),
-                        border: Border.all(color: Colors.grey)),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            getUpdateCartVariationData(
-                                    context,
-                                    popularProduct.id,
-                                    '$productQuantity',
-                                    selectedAttributes.value)
-                                .then((value) {
-                              showToast(value.message);
-                              if (value.status) {
-                                decrement();
-                              }
-                              return null;
-                            });
-                          },
-                          child: Container(
-                              padding: const EdgeInsets.only(
-                                  top: 4, bottom: 4, left: 8),
-                              child: const Icon(
-                                Icons.remove,
-                                size: 16,
-                                color: Colors.grey,
-                              )),
-                        ),
-                        addWidth(10),
-                        Container(
-                            height: MediaQuery.of(context).size.height,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 8),
-                            // color: const Color(0xffffe6e7),
-                            child: Center(
-                              child: Text(
-                                '$productQuantity',
-                                style: const TextStyle(
-                                    color: AppTheme.primaryColor,
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            )),
-                        addWidth(10),
-                        InkWell(
-                          onTap: () {
-                            getUpdateCartVariationData(
-                                    context,
-                                    popularProduct.id,
-                                    '$productQuantity',
-                                    selectedAttributes.value)
-                                .then((value) {
-                              showToast(value.message);
-                              if (value.status) {
-                                increment();
-                              }
-                              return null;
-                            });
-                          },
-                          child: Container(
-                              padding: const EdgeInsets.only(
-                                  top: 4, bottom: 4, right: 8),
-                              child: const Icon(
-                                Icons.add,
-                                size: 16,
-                                color: Colors.grey,
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                  addWidth(10),
+                  // Container(
+                  //   height: MediaQuery.of(context).size.height * 0.06,
+                  //   decoration: BoxDecoration(
+                  //       borderRadius:
+                  //           const BorderRadius.all(Radius.circular(5.0)),
+                  //       border: Border.all(color: Colors.grey)),
+                  //   // child: Row(
+                  //   //   crossAxisAlignment: CrossAxisAlignment.center,
+                  //   //   children: [
+                  //   //     InkWell(
+                  //   //       onTap: () {
+                  //   //         decrement();
+                  //   //         getUpdateCartVariationData(
+                  //   //                 context,
+                  //   //                 popularProduct.id,
+                  //   //                 '$productQuantity',
+                  //   //                 selectedAttributes.value)
+                  //   //             .then((value) {
+                  //   //           showToast(value.message);
+                  //   //           if (value.status) {
+                  //   //             decrement();
+                  //   //           }
+                  //   //           return null;
+                  //   //         });
+                  //   //       },
+                  //   //       child: Container(
+                  //   //           padding: const EdgeInsets.only(
+                  //   //               top: 4, bottom: 4, left: 8),
+                  //   //           child: const Icon(
+                  //   //             Icons.remove,
+                  //   //             size: 16,
+                  //   //             color: Colors.grey,
+                  //   //           )),
+                  //   //     ),
+                  //   //     addWidth(10),
+                  //   //     // Container(
+                  //   //     //     height: MediaQuery.of(context).size.height,
+                  //   //     //     padding: const EdgeInsets.symmetric(
+                  //   //     //         horizontal: 8, vertical: 8),
+                  //   //     //     // color: const Color(0xffffe6e7),
+                  //   //     //     child: Center(
+                  //   //     //       child: Text(
+                  //   //     //         '$productQuantity',
+                  //   //     //         style: const TextStyle(
+                  //   //     //             color: AppTheme.primaryColor,
+                  //   //     //             fontSize: 16.0,
+                  //   //     //             fontWeight: FontWeight.bold),
+                  //   //     //       ),
+                  //   //     //     )),
+                  //   //     addWidth(10),
+                  //   //     InkWell(
+                  //   //       onTap: () {
+                  //   //         increment();
+                  //   //         getUpdateCartVariationData(
+                  //   //                 context,
+                  //   //                 popularProduct.id,
+                  //   //                 '$productQuantity',
+                  //   //                 selectedAttributes.value)
+                  //   //             .then((value) {
+                  //   //           showToast(value.message);
+                  //   //           if (value.status) {
+                  //   //             increment();
+                  //   //           }
+                  //   //           return null;
+                  //   //         });
+                  //   //       },
+                  //   //       child: Container(
+                  //   //           padding: const EdgeInsets.only(
+                  //   //               top: 4, bottom: 4, right: 8),
+                  //   //           child: const Icon(
+                  //   //             Icons.add,
+                  //   //             size: 16,
+                  //   //             color: Colors.grey,
+                  //   //           )),
+                  //   //     ),
+                  //   //   ],
+                  //   // ),
+                  // ),
+                  // addWidth(10),
                   Expanded(
                     child: CommonButton(
                         buttonHeight: 6.5,
@@ -165,12 +172,12 @@ class ItemVariationBottomSheetState extends State<ItemVariationBottomSheet> {
                         text: 'ADD TO CART',
                         onTap: () {
                           getUpdateCartVariationData(context, popularProduct.id,
-                                  '$productQuantity', selectedAttributes.value)
+                                  '1', selectedAttributes.value)
                               .then((value) {
                             showToast(value.message);
                             if (value.status) {
                               ++bottomNavController.cartBadgeCount.value;
-                              Get.back();
+                              bottomNavController.getData();
                               Get.back();
                             }
                             return null;

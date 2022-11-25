@@ -1,12 +1,12 @@
 // import 'dart:convert';
 //
-// // import 'package:dinelah/controller/FilterController.dart';
-// import 'package:dinelah/controller/SearchController.dart';
-// import 'package:dinelah/res/theme/theme.dart';
-// import 'package:dinelah/ui/widget/common_button.dart';
-// import 'package:dinelah/ui/widget/common_button_white.dart';
-// import 'package:dinelah/ui/widget/common_widget.dart';
-// import 'package:dinelah/utils/dimensions.dart';
+// // import 'package:traidbiz/controller/FilterController.dart';
+// import 'package:traidbiz/controller/SearchController.dart';
+// import 'package:traidbiz/res/theme/theme.dart';
+// import 'package:traidbiz/ui/widget/common_button.dart';
+// import 'package:traidbiz/ui/widget/common_button_white.dart';
+// import 'package:traidbiz/ui/widget/common_widget.dart';
+// import 'package:traidbiz/utils/dimensions.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 // import 'package:get/get.dart';

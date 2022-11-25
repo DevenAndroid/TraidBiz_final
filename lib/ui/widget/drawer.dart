@@ -1,12 +1,19 @@
+import 'dart:convert';
+
 import 'package:client_information/client_information.dart';
-import 'package:dinelah/controller/ProfileController.dart';
-import 'package:dinelah/res/size_config.dart';
-import 'package:dinelah/res/strings.dart';
-import 'package:dinelah/res/theme/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:traidbiz/controller/ProfileController.dart';
+import 'package:traidbiz/models/ModelLogIn.dart';
+import 'package:traidbiz/res/size_config.dart';
+import 'package:traidbiz/res/strings.dart';
+import 'package:traidbiz/res/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:traidbiz/ui/screens/get_social_links_screen.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../routers/my_router.dart';
 
@@ -65,7 +72,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             child: Column(
               children: <Widget>[
                 Container(
-                  width: screenSize.width,
+                  width: screenSize.width * 40,
                   color: AppTheme.newprimaryColor,
                   child: Column(
                     children: [
@@ -128,33 +135,101 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: SizeConfig.heightMultiplier! * .5,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.address,
-                    icon: const Icon(
-                      Icons.location_on_outlined,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.back();
-                        Get.toNamed(MyRouter.addressScreen);
-                      } else {
-                        Get.back();
-                        Get.toNamed(MyRouter.logInScreen);
-                      }
-                    }),
                 const Divider(
                   height: 1,
                 ),
+                // _drawerTile(
+                //     active: true,
+                //     title: Strings.account,
+                //     icon: const Icon(
+                //       Icons.person_outline,
+                //       size: 22,
+                //       color: AppTheme.textColorDarkBLue,
+                //     ),
+                //     onTap: () async {
+                //       SharedPreferences pref =
+                //           await SharedPreferences.getInstance();
+                //       if (pref.getString('user') != null) {
+                //         Get.back();
+                //         widget.onItemTapped(4);
+                //       } else {
+                //         Get.back();
+                //         Get.toNamed(MyRouter.logInScreen);
+                //       }
+                //     }),
+                 ExpansionTile(
+                    leading: Icon(
+                      Icons.person_outline,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    title: Text('My Account Settings'),
+                    children: [
+                      _drawerTile(
+                          active: true,
+                          title: Strings.address,
+                          icon: const Icon(
+                            Icons.location_on_outlined,
+                            size: 20,
+                            color: AppTheme.textColorDarkBLue,
+                          ),
+                          onTap: () async {
+                            SharedPreferences pref =
+                            await SharedPreferences.getInstance();
+                            if (pref.getString('user') != null) {
+                              Get.back();
+                              Get.toNamed(MyRouter.addressScreen);
+                            } else {
+                              Get.back();
+                              Get.toNamed(MyRouter.logInScreen);
+                            }
+                          }),
+                      const Divider(
+                        height: 1,
+                      ),
+                      _drawerTile(
+                          active: true,
+                          title: " Connect with us on Social",
+                          icon: const Icon(
+                            Icons.golf_course_outlined,
+                            size: 20,
+                            color: AppTheme.textColorDarkBLue,
+                          ),
+                          onTap: (){
+                            Get.back();
+                            Get.to(const GetSocialLinksScreen());
+                          }),
+                    ]
+                ),
 
+
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: 'Credit Orders',
+                    icon: const Icon(
+                      Icons.account_balance,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _creditOrders),
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: Strings.myWallet,
+                    icon: const Icon(
+                      Icons.wallet_outlined,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _myWallet),
+                const Divider(
+                  height: 1,
+                ),
                 _drawerTile(
                     active: true,
                     title: Strings.orders,
@@ -175,303 +250,36 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       }
                     }),
 
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.myCart,
-                    icon: const Icon(
-                      Icons.shopping_cart_outlined,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      Get.back();
-                      widget.onItemTapped(1);
-                    }),
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.notification,
-                    icon: const Icon(
-                      Icons.notifications_none,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.back();
-                        Get.toNamed(MyRouter.notificationScreen);
-                      } else {
-                        Get.back();
-                        Get.toNamed(MyRouter.logInScreen);
-                      }
-                    }),
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.shippingpolicy,
-                    icon: const Icon(
-                      Icons.shopping_cart_checkout_outlined,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.toNamed(MyRouter.shippingPolicy);
-                      } else {
-                        Get.toNamed(MyRouter.shippingPolicy);
-                      }
-                    }),
-
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.refundandreturnspolicy,
-                    icon: const Icon(
-                      Icons.attach_money_outlined,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        // Get.back();
-                        Get.toNamed(MyRouter.refundDrawerScreen);
-                      } else {
-                        Get.toNamed(MyRouter.refundDrawerScreen);
-                      }
-                    }),
-
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.payments_options,
-                    icon: const Icon(
-                      Icons.money,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.toNamed(MyRouter.paymentOptionsDrawerScreen);
-                      } else {
-                        Get.toNamed(MyRouter.paymentOptionsDrawerScreen);
-                      }
-                    }),
-
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.aboutUs,
-                    icon: const Icon(
-                      Icons.details,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.toNamed(MyRouter.aboutUsScreenDrawer);
-                      } else {
-                        Get.toNamed(MyRouter.aboutUsScreenDrawer);
-                      }
-                    }),
-
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.whyTraidbiz,
-                    icon: const Icon(
-                      Icons.card_giftcard_outlined,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.toNamed(MyRouter.whyTraidBizScreenDrawer);
-                      } else {
-                        Get.toNamed(MyRouter.whyTraidBizScreenDrawer);
-                      }
-                    }),
-
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.sellonTraidBiz,
-                    icon: const Icon(
-                      Icons.shopping_cart_checkout_outlined,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.toNamed(MyRouter.sellOnTraidBizScreen);
-                      } else {
-                        Get.toNamed(MyRouter.sellOnTraidBizScreen);
-                      }
-                    }),
-
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.privacyPolicy,
-                    icon: const Icon(
-                      Icons.list_alt,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.toNamed(MyRouter.privacyPolicyScreen);
-                      } else {
-                        Get.toNamed(MyRouter.privacyPolicyScreen);
-                      }
-                    }),
-
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.termsAndConditions,
-                    icon: const Icon(
-                      Icons.security,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.toNamed(MyRouter.termsAndConditionsDrawer);
-                      } else {
-                        Get.toNamed(MyRouter.termsAndConditionsDrawer);
-                      }
-                    }),
-
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.ContactUs,
-                    icon: const Icon(
-                      Icons.phone_locked_sharp,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.toNamed(MyRouter.contactUsScreenDrawer);
-                      } else {
-                        Get.toNamed(MyRouter.contactUsScreenDrawer);
-                      }
-                    }),
-
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.helpCenter,
-                    icon: const Icon(
-                      Icons.person_add_alt_1_sharp,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.toNamed(MyRouter.helpCenterScreenDrawer);
-                      } else {
-                        Get.toNamed(MyRouter.helpCenterScreenDrawer);
-                      }
-                    }),
-
-                const Divider(
-                  height: 1,
-                ),
-
-                _drawerTile(
-                    active: true,
-                    title: Strings.referAndEarn,
-                    icon: const Icon(
-                      Icons.card_giftcard_outlined,
-                      size: 22,
-                      color: AppTheme.textColorDarkBLue,
-                    ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.back();
-                        Get.toNamed(MyRouter.referAndEarnDrawer);
-                      } else {
-                        Get.back();
-                        Get.toNamed(MyRouter.logInScreen);
-                      }
-                    }),
-
-                const Divider(
-                  height: 1,
-                ),
-
-                // my bookings screen
+                // myCart Remove by Client
                 // const Divider(
                 //   height: 1,
                 // ),
                 // _drawerTile(
                 //     active: true,
-                //     title: Strings.myBookings,
+                //     title: Strings.myCart,
                 //     icon: const Icon(
-                //       Icons.library_books_outlined,
+                //       Icons.shopping_cart_outlined,
+                //       size: 22,
+                //       color: AppTheme.textColorDarkBLue,
+                //     ),
+                //     onTap: () async {
+                //       Get.back();
+                //       widget.onItemTapped(1);
+                //     }),
+
+
+                // Used in My account Settings
+                // const Divider(
+                //   height: 1,
+                // ),
+                // SizedBox(
+                //   height: SizeConfig.heightMultiplier! * .5,
+                // ),
+                // _drawerTile(
+                //     active: true,
+                //     title: Strings.address,
+                //     icon: const Icon(
+                //       Icons.location_on_outlined,
                 //       size: 22,
                 //       color: AppTheme.textColorDarkBLue,
                 //     ),
@@ -480,49 +288,253 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 //           await SharedPreferences.getInstance();
                 //       if (pref.getString('user') != null) {
                 //         Get.back();
-                //         Get.toNamed(MyRouter.myBookingsScreen);
+                //         Get.toNamed(MyRouter.addressScreen);
                 //       } else {
                 //         Get.back();
                 //         Get.toNamed(MyRouter.logInScreen);
                 //       }
                 //     }),
+
+
+                const Divider(
+                  height: 1,
+                ),
+                SizedBox(
+                  height: SizeConfig.heightMultiplier! * .5,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: Strings.savedAddress,
+                    icon: const Icon(
+                      Icons.location_city_outlined,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _savesAddress),
+
+                //accountDetails Remove by Client
+                // const Divider(
+                //   height: 1,
+                // ),
+                // SizedBox(
+                //   height: SizeConfig.heightMultiplier! * .5,
+                // ),
+                // _drawerTile(
+                //     active: true,
+                //     title: Strings.accountDetails,
+                //     icon: const Icon(
+                //       Icons.account_box_outlined,
+                //       size: 22,
+                //       color: AppTheme.textColorDarkBLue,
+                //     ),
+                //     onTap: _accountDetails),
+
+
+
                 const Divider(
                   height: 1,
                 ),
                 _drawerTile(
                     active: true,
-                    title: Strings.account,
+                    title: Strings.downloads,
                     icon: const Icon(
-                      Icons.person_outline,
+                      Icons.download_outlined,
                       size: 22,
                       color: AppTheme.textColorDarkBLue,
                     ),
-                    onTap: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      if (pref.getString('user') != null) {
-                        Get.back();
-                        widget.onItemTapped(4);
-                      } else {
-                        Get.back();
-                        Get.toNamed(MyRouter.logInScreen);
-                      }
-                    }),
+                    onTap: _downLoads),
+
+                // notification Remove By Client
+                // const Divider(
+                //   height: 1,
+                // ),
+                // _drawerTile(
+                //     active: true,
+                //     title: Strings.notification,
+                //     icon: const Icon(
+                //       Icons.notifications_none,
+                //       size: 22,
+                //       color: AppTheme.textColorDarkBLue,
+                //     ),
+                //     onTap: () async {
+                //       SharedPreferences pref =
+                //           await SharedPreferences.getInstance();
+                //       if (pref.getString('user') != null) {
+                //         Get.back();
+                //         Get.toNamed(MyRouter.notificationScreen);
+                //       } else {
+                //         Get.back();
+                //         Get.toNamed(MyRouter.logInScreen);
+                //       }
+                //     }),
+
+
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                  active: true,
+                  title: Strings.shippingpolicy,
+                  icon: const Icon(
+                    Icons.shopping_cart_checkout_outlined,
+                    size: 22,
+                    color: AppTheme.textColorDarkBLue,
+                  ),
+                  onTap: _shippingPolicy,
+                ),
                 const Divider(
                   height: 1,
                 ),
                 _drawerTile(
                     active: true,
-                    title: Strings.wishlist,
+                    title: "Ratings and Reviews",
                     icon: const Icon(
-                      Icons.favorite_border,
+                      Icons.attach_money_outlined,
                       size: 22,
                       color: AppTheme.textColorDarkBLue,
                     ),
-                    onTap: () {
-                      Get.back();
-                      widget.onItemTapped(3);
-                    }),
+                    onTap: _ratingsAndReviews),
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: Strings.refundandreturnspolicy,
+                    icon: const Icon(
+                      Icons.attach_money_outlined,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _refundAndReturnPolicy),
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: Strings.payments_options,
+                    icon: const Icon(
+                      Icons.money,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _paymentsOptions),
+
+                // aboutUs Remove by Client
+                // const Divider(
+                //   height: 1,
+                // ),
+                // _drawerTile(
+                //     active: true,
+                //     title: Strings.aboutUs,
+                //     icon: const Icon(
+                //       Icons.details,
+                //       size: 22,
+                //       color: AppTheme.textColorDarkBLue,
+                //     ),
+                //     onTap: _aboutUs),
+
+
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: Strings.inquiries,
+                    icon: const Icon(
+                      Icons.details,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _inquiry),
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: Strings.whyTraidbiz,
+                    icon: const Icon(
+                      Icons.card_giftcard_outlined,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _whyTraidBiz),
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: Strings.sellonTraidBiz,
+                    icon: const Icon(
+                      Icons.shopping_cart_checkout_outlined,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _sellOnTraidBiz),
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: Strings.privacyPolicy,
+                    icon: const Icon(
+                      Icons.list_alt,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _privacyPolicy),
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: Strings.termsAndConditions,
+                    icon: const Icon(
+                      Icons.security,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _termsAndConditions),
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: Strings.ContactUs,
+                    icon: const Icon(
+                      Icons.phone_locked_sharp,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _contactUs),
+                const Divider(
+                  height: 1,
+                ),
+                _drawerTile(
+                    active: true,
+                    title: Strings.helpCenter,
+                    icon: const Icon(
+                      Icons.person_add_alt_1_sharp,
+                      size: 22,
+                      color: AppTheme.textColorDarkBLue,
+                    ),
+                    onTap: _helpCenter),
+
+                // referAndEarn Remove By Client
+                // const Divider(
+                //   height: 1,
+                // ),
+                // _drawerTile(
+                //     active: true,
+                //     title: Strings.referAndEarn,
+                //     icon: const Icon(
+                //       Icons.card_giftcard_outlined,
+                //       size: 22,
+                //       color: AppTheme.textColorDarkBLue,
+                //     ),
+                //     onTap: _referAndEarn),
+
+
+
 
                 !isLogin ? const SizedBox.shrink() : const Divider(),
                 !isLogin
@@ -538,9 +550,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         onTap: () async {
                           _getClientInformation();
                           Get.back();
-                          SharedPreferences preferences =
-                              await SharedPreferences.getInstance();
+                          await FirebaseAuth.instance.signOut();
+                          SharedPreferences preferences = await SharedPreferences.getInstance();
                           await preferences.clear();
+
                           Get.offAllNamed(MyRouter.logInScreen,
                               arguments: ['mainScreen']);
                         }),
@@ -587,5 +600,267 @@ class _CustomDrawerState extends State<CustomDrawer> {
       ),
       onTap: active ? onTap : null,
     );
+  }
+
+  _shippingPolicy() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/shipping-policy/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/shipping-policy/';
+    }
+
+    await launch(url);
+  }
+
+  _refundAndReturnPolicy() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/refund_returns/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/refund_returns/';
+    }
+
+    await launch(url);
+  }
+
+  _ratingsAndReviews() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user = ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+
+      showToast("Under Development");
+      // url = 'https://traidbiz.com/refund_returns/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      showToast("Under Development");
+      // url = 'https://traidbiz.com/refund_returns/';
+    }
+
+    await launch(url);
+  }
+
+  _paymentsOptions() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/payments-options/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/payments-options/';
+    }
+
+    await launch(url);
+  }
+
+  _aboutUs() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/about_us/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/about_us/';
+    }
+
+    await launch(url);
+  }
+
+  // _aboutUs() async {
+  //   ModelLogInData? user =
+  //       ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+  //   user.cookie;
+  //   var url =
+  //       'https://traidbiz.com/about-us/?login_cookie=${user.cookie}&app_page=true';
+  //   if (await canLaunchUrl(Uri(path: "https://www.google.com"))) {
+  //     await launchUrl(Uri(path: "https://www.google.com"));
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
+
+  _whyTraidBiz() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/why-traidbiz/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/why-traidbiz/';
+    }
+
+    await launch(url);
+  }
+
+  _sellOnTraidBiz() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/vendor-membership/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/vendor-membership/';
+    }
+
+    await launch(url);
+  }
+
+  _privacyPolicy() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/privacy-policy/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/privacy-policy/';
+    }
+
+    await launch(url);
+  }
+
+  _termsAndConditions() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/term-conditions/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/term-conditions/';
+    }
+
+    await launch(url);
+  }
+
+  _contactUs() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/contact-us/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/contact-us/';
+    }
+
+    await launch(url);
+  }
+
+  _helpCenter() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/help-centre?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/help-centre';
+    }
+
+    await launch(url);
+  }
+
+  _referAndEarn() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/why-traidbiz/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/why-traidbiz/';
+    }
+
+    await launch(url);
+  }
+
+  //Newly added on 16 sep 2022
+  _downLoads() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/my-account/downloads/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/my-account/downloads/';
+    }
+
+    await launch(url);
+  }
+  _savesAddress() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/my-account/edit-address/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/my-account/edit-address/';
+    }
+
+    await launch(url);
+  }
+  _accountDetails() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/my-account/edit-account/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/my-account/edit-account/';
+    }
+
+    await launch(url);
+  }
+  _myWallet() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/my-account/woo-wallet/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/my-account/woo-wallet/';
+    }
+
+    await launch(url);
+  }
+  _inquiry() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/my-account/inquiry/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/my-account/inquiry/';
+    }
+
+    await launch(url);
+  }
+  _creditOrders() async {
+    var url;
+    if (pref!.getString('user') != null) {
+      ModelLogInData? user =
+          ModelLogInData.fromJson(jsonDecode(pref!.getString('user')!));
+      url =
+          'https://traidbiz.com/my-account/credit-orders/?login_cookie=${user.cookie}&app_page=true';
+    } else {
+      url = 'https://traidbiz.com/my-account/credit-orders/';
+    }
+
+    await launch(url);
   }
 }

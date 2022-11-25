@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dinelah/models/ModelWishlist.dart';
+import 'package:traidbiz/models/ModelWishlist.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/ModelLogIn.dart';
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
 Future<ModelWishListData> getWishlistData() async {
   var map = <String, dynamic>{};
@@ -30,6 +32,9 @@ Future<ModelWishListData> getWishlistData() async {
   if (response.statusCode == 200) {
     return ModelWishListData.fromJson(json.decode(response.body));
   } else {
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
+
     throw Exception(response.body);
   }
 }

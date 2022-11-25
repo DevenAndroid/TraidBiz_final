@@ -1,6 +1,6 @@
-import 'package:dinelah/controller/GetHomeController.dart';
-import 'package:dinelah/controller/SplashScreenController.dart';
-import 'package:dinelah/res/app_assets.dart';
+import 'package:traidbiz/controller/GetHomeController.dart';
+import 'package:traidbiz/controller/SplashScreenController.dart';
+import 'package:traidbiz/res/app_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,26 +12,27 @@ class SplashScreen extends StatelessWidget {
   final _controller = Get.put(GetHomeController());
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
+      body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
         children: [
-          Image.asset(
-            AppAssets.splashBg,
-            width: screenSize.width,
-            height: MediaQuery.of(context).size.height * 0.75,
-            fit: BoxFit.fill,
-          ),
-          Positioned(
-            bottom: 0,
-            child: Image.asset(
-              AppAssets.logoWelcome,
-              width: screenSize.width * 0.7,
+            Container(
+              margin: const EdgeInsets.only(top: 20),
+              child: Image.asset(
+                AppAssets.logoWelcome,
+                width: MediaQuery.of(context).size.width * 0.6,
+              ),
             ),
-          ),
+            Image.asset(
+              AppAssets.splashBgNew,
+              fit: BoxFit.cover,
+              width: MediaQuery.of(context).size.width,
+            ),
         ],
       ),
+          )),
     );
   }
 }

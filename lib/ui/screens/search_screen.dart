@@ -1,13 +1,16 @@
-import 'package:dinelah/controller/BottomNavController.dart';
-import 'package:dinelah/controller/SearchController.dart';
-import 'package:dinelah/helper/Helpers.dart';
-import 'package:dinelah/models/ModelSearchProduct.dart';
-import 'package:dinelah/repositories/get_update_cart_repository.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/ui/widget/common_button.dart';
+import 'dart:developer';
+
+import 'package:traidbiz/controller/BottomNavController.dart';
+import 'package:traidbiz/controller/SearchController.dart';
+import 'package:traidbiz/helper/Helpers.dart';
+import 'package:traidbiz/repositories/get_update_cart_repository.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/ui/screens/item/ItemVariationBottomSheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 
+import '../../models/PopularProduct.dart';
 import '../../res/app_assets.dart';
 import '../../routers/my_router.dart';
 import '../widget/common_widget.dart';
@@ -28,33 +31,49 @@ class SearchProductState extends State<SearchProduct> {
   RxBool isSort = false.obs;
 
   @override
+  void dispose() {
+    super.dispose();
+    controller.onClose();
+    searchController.value.text.toString();
+  }
+
+  @override
   void initState() {
     super.initState();
     if (Get.arguments != null) {
       controller.searchKeyboard.value = Get.arguments[0];
+      searchController.text = controller.searchKeyboard.value;
+      controller.getMapData();
+      // applyFilter();
     }
-    searchController.text = controller.searchKeyboard.value;
-    searchController.addListener(() {
-      controller.searchKeyboard.value = searchController.text;
-    });
-    searchController.addListener(() {
-      controller.searchKeyboard.value = searchController.text;
-      controller.mListProducts.clear();
-      // if (searchController.text.isEmpty) {
-      //   controller.mListProducts.clear();
-      //   controller.mListProducts.addAll(controller.model.value.data!.products);
-      // }
-      for (var item in controller.model.value.data!.products) {
-        if (item.name
-                .toLowerCase()
-                .contains(searchController.text.toLowerCase().toString()) ||
-            item.slug
-                .toLowerCase()
-                .contains(searchController.text.toLowerCase())) {
-          controller.mListProducts.add(item);
-        }
-      }
-    });
+
+    // searchController.addListener(() {
+    //   controller.searchKeyboard.value = searchController.text;
+    //   controller.mListProducts.clear();
+    //   controller.getData(
+    //       controller.searchKeyboard.value,
+    //       controller.productType.value,
+    //       controller.minPrice.value,
+    //       controller.maxPrice.value,
+    //       controller.rating.value,
+    //       controller.sortBy.value,
+    //       controller.modelAttribute.value);
+    //   for (var item in controller.model.value.data!.products) {
+    //     if (item.name
+    //             .toLowerCase()
+    //             .contains(searchController.text.toLowerCase().toString()) ||
+    //         item.slug
+    //             .toLowerCase()
+    //             .contains(searchController.text.toLowerCase())) {
+    //       controller.mListProducts.add(item);
+    //     }
+    //   }
+    // });
+  }
+
+  applyFilter() {
+    controller.searchKeyboard.value = searchController.text;
+    controller.mListProducts.clear();
     controller.getData(
         controller.searchKeyboard.value,
         controller.productType.value,
@@ -63,6 +82,16 @@ class SearchProductState extends State<SearchProduct> {
         controller.rating.value,
         controller.sortBy.value,
         controller.modelAttribute.value);
+    for (var item in controller.model.value.data!.products) {
+      if (item.name
+              .toLowerCase()
+              .contains(searchController.text.toLowerCase().toString()) ||
+          item.slug
+              .toLowerCase()
+              .contains(searchController.text.toLowerCase())) {
+        controller.mListProducts.add(item);
+      }
+    }
   }
 
   final searchController = TextEditingController();
@@ -82,7 +111,7 @@ class SearchProductState extends State<SearchProduct> {
         color: Color(0xfffff8f9),
         image: DecorationImage(
           image: AssetImage(
-            AppAssets.shapeBg,
+            AppAssets.dashboardBg,
           ),
           alignment: Alignment.topRight,
           fit: BoxFit.contain,
@@ -110,15 +139,15 @@ class SearchProductState extends State<SearchProduct> {
                                 children: [
                                   Expanded(
                                     child: searchView(context, () {
-                                      controller.getMapData();
+                                      applyFilter();
                                     }, searchController),
                                   ),
-                                  filter(() {
-                                    Get.toNamed(MyRouter.filterProduct,
-                                        arguments: [
-                                          controller.searchKeyboard.value
-                                        ]);
-                                  })
+                                  // filter(() {
+                                  //   Get.toNamed(MyRouter.filterProduct,
+                                  //       arguments: [
+                                  //         controller.searchKeyboard.value
+                                  //       ]);
+                                  // })
                                 ],
                               ),
                             ),
@@ -149,10 +178,11 @@ class SearchProductState extends State<SearchProduct> {
                                         size: 50,
                                         color: Colors.grey[600],
                                       ),
-                                      Text(
+                                      const Text(
                                         'Sort By',
                                         style: TextStyle(
                                             fontSize: 20,
+                                            color: Colors.white,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       addHeight(24),
@@ -252,25 +282,38 @@ class SearchProductState extends State<SearchProduct> {
     );
   }
 
-  Widget filter(onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: 42,
-        height: 42,
-        margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            color: Colors.black, borderRadius: BorderRadius.circular(8)),
-        child: Image.asset(AppAssets.filterIcon),
-      ),
-    );
-  }
+  // Widget filter(onTap) {
+  //   return InkWell(
+  //     onTap: onTap,
+  //     child: Container(
+  //       width: 42,
+  //       height: 42,
+  //       margin: const EdgeInsets.only(left: 5, bottom: 10),
+  //       padding: const EdgeInsets.all(10),
+  //       decoration: BoxDecoration(
+  //           color: Colors.black, borderRadius: BorderRadius.circular(8)),
+  //       child: Image.asset(AppAssets.filterIcon),
+  //     ),
+  //   );
+  // }
 
-  Widget orderCard(Products product) {
+  Widget orderCard(ModelProduct product) {
     final bottomNavController = Get.put(BottomNavController());
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        print("product type and id::" +
+            product.id.toString() +
+            '\n' +
+            product.type.toString());
+
+        if (product.type.toString() == "simple") {
+          Get.toNamed(MyRouter.singleProductScreen, arguments: [product]);
+        } else if (product.type.toString() == "variable") {
+          Get.toNamed(MyRouter.singleProductScreen, arguments: [product]);
+        } else {
+          Get.toNamed(MyRouter.bookingProductScreen, arguments: [product.id]);
+        }
+      },
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         child: Card(
@@ -312,7 +355,7 @@ class SearchProductState extends State<SearchProduct> {
                             ),
                           );
                         },
-                        fit: BoxFit.cover,
+                        // fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -351,19 +394,20 @@ class SearchProductState extends State<SearchProduct> {
                         ),
                         InkWell(
                           onTap: () {
-                            // print(product.type.toString());
+                            log('VARIATION PRODUCT ::${product.attributeData.length}');
                             if (product.type.toString() == "simple") {
                               getUpdateCartData(context, product.id, 1)
                                   .then((value) {
                                 if (value.status) {
                                   ++bottomNavController.cartBadgeCount.value;
-                                  Helpers.createSnackBar(
-                                      context, value.message.toString());
-                                } else {}
+                                  showToast(value.message);
+                                } else {
+                                  showToast(value.message);
+                                }
                                 return;
                               });
                             } else if (product.type.toString() == "variable") {
-                              _getVariationBottomSheet();
+                              _getVariationBottomSheet(product);
                             } else if (product.type.toString() == "booking") {
                               Get.toNamed(MyRouter.bookingProductScreen,
                                   arguments: [product.id]);
@@ -400,297 +444,12 @@ class SearchProductState extends State<SearchProduct> {
     );
   }
 
-  _getVariationBottomSheet() {
+  _getVariationBottomSheet(ModelProduct popularProduct) {
     return showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         builder: (context) {
-          return Wrap(
-            children: [
-              Container(
-                  color: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Exotica Pizza',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      addHeight(8),
-                      const Text(
-                        '[Green Capsicum, Sweet corn, Olives, Jalapino,Mashroom, Onion And Herbed Paneer]',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey),
-                      ),
-                      const Divider(),
-                      addHeight(8),
-                      const Text(
-                        'Variation',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      addHeight(4),
-                      const Text(
-                        'Please select any one option',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey),
-                      ),
-                      addHeight(4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Small',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.primaryColor),
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                '\$259.0',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppTheme.primaryColor),
-                              ),
-                              Radio(
-                                  activeColor: AppTheme.primaryColor,
-                                  value: 1,
-                                  groupValue: val,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      val = value as int?;
-                                    });
-                                  })
-                            ],
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Medium',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          Row(
-                            children: [
-                              const Text(
-                                '\$489.0',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              ),
-                              Radio(
-                                  value: 0, groupValue: 1, onChanged: (val) {})
-                            ],
-                          )
-                        ],
-                      ),
-                      addHeight(8),
-                      const Text(
-                        'choice [7 Inch]',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      addHeight(4),
-                      const Text(
-                        'Please select any one option',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey),
-                      ),
-                      addHeight(4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Hand Tossed',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                '\$15.0',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Radio(
-                                  activeColor: AppTheme.primaryColor,
-                                  value: 1,
-                                  groupValue: 1,
-                                  onChanged: (val) {})
-                            ],
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Fresh Pen',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                '\$15.0',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Radio(
-                                  activeColor: AppTheme.primaryColor,
-                                  value: 1,
-                                  groupValue: 1,
-                                  onChanged: (val) {})
-                            ],
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Thin Crust',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          Row(
-                            children: [
-                              const Text(
-                                '\$20.0',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              ),
-                              Radio(
-                                  value: 0, groupValue: 1, onChanged: (val) {})
-                            ],
-                          )
-                        ],
-                      ),
-                      const Text(
-                        'Extra Cheese (Small)',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      addHeight(4),
-                      const Text(
-                        'Please select any one option',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey),
-                      ),
-                      addHeight(4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Extra Cheese (Small)',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                '\$60.0',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Checkbox(value: false, onChanged: (value) {})
-                            ],
-                          )
-                        ],
-                      ),
-                      addHeight(8),
-                      Row(
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.06,
-                            decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(5.0)),
-                                border: Border.all(color: Colors.blueAccent)),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                InkWell(
-                                  onTap: () {},
-                                  child: Container(
-                                      padding: const EdgeInsets.only(
-                                          top: 4, bottom: 4, left: 8),
-                                      child: const Icon(
-                                        Icons.remove,
-                                        size: 16,
-                                        color: Colors.grey,
-                                      )),
-                                ),
-                                addWidth(10),
-                                Container(
-                                    height: MediaQuery.of(context).size.height,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 8),
-                                    color: const Color(0xffffe6e7),
-                                    child: const Center(
-                                        child: Text(
-                                      '5',
-                                      style: TextStyle(
-                                          color: AppTheme.primaryColor,
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold),
-                                    ))),
-                                addWidth(10),
-                                InkWell(
-                                  onTap: () {},
-                                  child: Container(
-                                      padding: const EdgeInsets.only(
-                                          top: 4, bottom: 4, right: 8),
-                                      child: const Icon(
-                                        Icons.add,
-                                        size: 16,
-                                        color: Colors.grey,
-                                      )),
-                                ),
-                              ],
-                            ),
-                          ),
-                          addWidth(10),
-                          CommonButton(
-                              buttonHeight: 6.5,
-                              buttonWidth: 60,
-                              text: 'ADD TO CART',
-                              onTap: () {},
-                              mainGradient: AppTheme.primaryGradientColor)
-                        ],
-                      ),
-                    ],
-                  ))
-            ],
-          );
+          return ItemVariationBottomSheet(popularProduct);
         });
   }
 

@@ -1,5 +1,5 @@
 
-import 'package:dinelah/res/size_config.dart';
+import 'package:traidbiz/res/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:dinelah/res/theme/theme_color.dart';
+import 'package:traidbiz/res/theme/theme_color.dart';
 import 'package:flutter/material.dart';
 
 // class AppTheme {
@@ -32,7 +32,7 @@ class AppTheme {
   static const Color primaryColorVariant = Color(0x33394A6C);
   static const Color textColorRed = Color(0xFFE5001C);
   static const Color textColorDarkBLue = Color(0xFF1F2F40);
-  static const Color textColorSkyBLue = Color(0xFF4a97cc);
+  static const Color textColorSkyBLue = Color(0xff1c50ea);
   static const Color colorEditFieldBg = Color(0xFFFEFEFE);
   static const Color colorBackground = Color(0xfffff6f7);
   static const Color textColorYellow = Color(0xFFf7ba03);

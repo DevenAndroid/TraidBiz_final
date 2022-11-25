@@ -1,4 +1,4 @@
-import 'package:dinelah/models/PopularProduct.dart';
+import 'package:traidbiz/models/PopularProduct.dart';
 
 class ModelGetCartData {
   ModelGetCartData({
@@ -10,7 +10,7 @@ class ModelGetCartData {
   String? message;
   Data? data;
 
-  ModelGetCartData.fromJson(Map<String, dynamic> json){
+  ModelGetCartData.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
     data = Data.fromJson(json['data']);
@@ -33,15 +33,15 @@ class Data {
   late final Cartmeta cartmeta;
   late final List<Items> items;
 
-  Data.fromJson(Map<String, dynamic> json){
+  Data.fromJson(Map<String, dynamic> json) {
     cartmeta = Cartmeta.fromJson(json['cartmeta']);
-    items = List.from(json['items']).map((e)=>Items.fromJson(e)).toList();
+    items = List.from(json['items']).map((e) => Items.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['cartmeta'] = cartmeta.toJson();
-    _data['items'] = items.map((e)=>e.toJson()).toList();
+    _data['items'] = items.map((e) => e.toJson()).toList();
     return _data;
   }
 }
@@ -82,7 +82,7 @@ class Cartmeta {
   late final String totalTax;
   late final String currencySymbol;
 
-  Cartmeta.fromJson(Map<String, dynamic> json){
+  Cartmeta.fromJson(Map<String, dynamic> json) {
     subtotal = json['subtotal'];
     subtotalTax = json['subtotal_tax'];
     shippingTotal = json['shipping_total'];
@@ -92,7 +92,9 @@ class Cartmeta {
     discountTax = json['discount_tax'];
     cartContentsTotal = json['cart_contents_total'];
     cartContentsTax = json['cart_contents_tax'];
-    cartContentsTaxes = List.castFrom<dynamic, dynamic>(json['cart_contents_taxes']);
+    cartContentsTaxes =
+        List.castFrom<dynamic, dynamic>(json['cart_contents_taxes']);
+
     feeTotal = json['fee_total'];
     feeTax = json['fee_tax'];
     feeTaxes = List.castFrom<dynamic, dynamic>(json['fee_taxes']);
@@ -130,12 +132,12 @@ class Items {
     this.variation,
     this.addons,
   });
-   ModelProduct? product;
-   var quantity;
-   var variation;
-   var addons;
+  ModelProduct? product;
+  var quantity;
+  var variation;
+  var addons;
 
-  Items.fromJson(Map<String, dynamic> json){
+  Items.fromJson(Map<String, dynamic> json) {
     product = ModelProduct.fromJson(json['product']);
     quantity = json['quantity'];
     variation = null;

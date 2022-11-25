@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dinelah/models/ModelSingleOrder.dart';
+import 'package:traidbiz/models/ModelSingleOrder.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,93 +55,95 @@ class ChatterScreenState extends State<ChatterScreen> {
     return Scaffold(
       backgroundColor: AppTheme.colorBackground,
       appBar: backAppBarRed('Chat'),
-      body: Obx(() {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            // user == null && chatNode == '' ?
-            // SizedBox.shrink() :
-            user == null && chatNode == ''
-                ? const SizedBox.shrink()
-                : ChatStream(user.value, chatNode),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              // decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Material(
-                      borderRadius: BorderRadius.circular(50),
-                      color: Colors.white,
-                      elevation: 5,
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0, top: 2, bottom: 2),
-                        child: TextFormField(
-                          keyboardType: TextInputType.multiline,
-                          minLines: 1,
-                          maxLines: 4,
-                          decoration: const InputDecoration(
-                              contentPadding: const EdgeInsets.all(16),
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              enabled: true),
-                          onChanged: (value) {
-                            messageText = value;
-                          },
-                          controller: chatMsgTextController,
-                          //decoration: kMessageTextFieldDecoration,
+      body: SingleChildScrollView(
+        child: Obx(() {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              // user == null && chatNode == '' ?
+              // SizedBox.shrink() :
+              user == null && chatNode == ''
+                  ? const SizedBox.shrink()
+                  : ChatStream(user.value, chatNode),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                // decoration: kMessageContainerDecoration,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: Material(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Colors.white,
+                        elevation: 5,
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 8.0, top: 2, bottom: 2),
+                          child: TextFormField(
+                            keyboardType: TextInputType.multiline,
+                            minLines: 1,
+                            maxLines: 4,
+                            decoration: const InputDecoration(
+                                contentPadding: const EdgeInsets.all(16),
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                enabled: true),
+                            onChanged: (value) {
+                              messageText = value;
+                            },
+                            controller: chatMsgTextController,
+                            //decoration: kMessageTextFieldDecoration,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  MaterialButton(
-                      shape: const CircleBorder(),
-                      color: AppTheme.primaryColor,
-                      onPressed: () {
-                        if (chatMsgTextController.text.isNotEmpty) {
-                          firestore
-                              .collection('messages')
-                              .doc(Get.arguments[2].toString())
-                              .collection(chatNode)
-                              .add({
-                            'isRead': false,
-                            'receiverId': receiverDetails.id,
-                            'receiverName': receiverDetails.name,
-                            'receiverPhoto': '',
-                            'senderId': user.value.user!.id.toString(),
-                            'senderName':
-                                user.value.user!.displayname.toString(),
-                            'senderPhoto': "",
-                            'message': messageText,
-                            'senderUserRole': "Customer",
-                            'receiverUserRole': Get.arguments[1].toString(),
-                            'user': true,
-                            'timestamp': DateTime.now().millisecondsSinceEpoch,
-                          });
-                        }
-                        chatMsgTextController.clear();
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Icon(
-                          Icons.send,
-                          color: Colors.white,
+                    MaterialButton(
+                        shape: const CircleBorder(),
+                        color: AppTheme.primaryColor,
+                        onPressed: () {
+                          if (chatMsgTextController.text.isNotEmpty) {
+                            firestore
+                                .collection('messages')
+                                .doc(Get.arguments[2].toString())
+                                .collection(chatNode)
+                                .add({
+                              'isRead': false,
+                              'receiverId': receiverDetails.id,
+                              'receiverName': receiverDetails.name,
+                              'receiverPhoto': '',
+                              'senderId': user.value.user!.id.toString(),
+                              'senderName':
+                                  user.value.user!.displayname.toString(),
+                              'senderPhoto': "",
+                              'message': messageText,
+                              'senderUserRole': "Customer",
+                              'receiverUserRole': Get.arguments[1].toString(),
+                              'user': true,
+                              'timestamp': DateTime.now().millisecondsSinceEpoch,
+                            });
+                          }
+                          chatMsgTextController.clear();
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Icon(
+                            Icons.send,
+                            color: Colors.white,
+                          ),
+                        )
+                        // Text(
+                        //   'Send',
+                        //   style: kSendButtonTextStyle,
+                        // ),
                         ),
-                      )
-                      // Text(
-                      //   'Send',
-                      //   style: kSendButtonTextStyle,
-                      // ),
-                      ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        );
-      }),
+            ],
+          );
+        }),
+      ),
     );
   }
 }

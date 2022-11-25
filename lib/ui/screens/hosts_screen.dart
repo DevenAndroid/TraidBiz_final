@@ -1,15 +1,15 @@
 import 'package:card_swiper/card_swiper.dart';
-import 'package:dinelah/models/ModelStoreInfo.dart';
-import 'package:dinelah/repositories/getSupport.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/screens/item/ItemProduct.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:traidbiz/models/ModelStoreInfo.dart';
+import 'package:traidbiz/repositories/getSupport.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/screens/item/ItemProduct.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../controller/HostController.dart';
 import '../../res/app_assets.dart';
@@ -65,7 +65,7 @@ class HostsScreenState extends State<HostsScreen> {
         ),
       ),
       child: Scaffold(
-        appBar: backAppBar('Hosts'),
+        appBar: backAppBar(Get.arguments[1]),
         backgroundColor: Colors.transparent,
         body: Obx(() {
           return _controller.isDataLoading.value
@@ -112,7 +112,7 @@ class HostsScreenState extends State<HostsScreen> {
                                         ),
                                       );
                                     },
-                                    fit: BoxFit.contain,
+                                    fit: BoxFit.cover,
                                   )),
                               Positioned(
                                   bottom: 0,
@@ -176,6 +176,18 @@ class HostsScreenState extends State<HostsScreen> {
                                                   fontWeight: FontWeight.w400,
                                                   color: Colors.grey),
                                             ),
+                                            InkWell(
+                                              onTap: _clicktoCall,
+                                              child: Text(
+                                                'Phone :- ${_controller.model.value.data!.storeInfo.storePhone}',
+                                                style: const TextStyle(
+                                                    height: 1.5,
+                                                    fontSize: 14.0,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.grey),
+                                              ),
+                                            ),
+
                                             addHeight(12),
                                             const Divider(
                                               color: Colors.grey,
@@ -186,40 +198,81 @@ class HostsScreenState extends State<HostsScreen> {
                                                     MainAxisAlignment
                                                         .spaceEvenly,
                                                 children: [
+                                                  _controller.model.value.data!.storeInfo.storeOpenClose.enabled.toString()=="yes"
+                                                      ?
                                                   InkWell(
-                                                    onTap: () {
-                                                      Get.defaultDialog(
-                                                          backgroundColor:
-                                                              Colors.white
-                                                                  .withOpacity(
-                                                                      0.90),
-                                                          titleStyle:
-                                                              const TextStyle(
-                                                            color: Colors.black,
-                                                          ),
-                                                          title: "Store Timing",
-                                                          content:
-                                                              dataTableWidget(
-                                                            _controller
-                                                                .model
-                                                                .value
-                                                                .data!
-                                                                .storeInfo
-                                                                .storeOpenClose
-                                                                .time,
-                                                          ));
-                                                    },
-                                                    child: const Text(
-                                                      'Store Time',
-                                                      style: TextStyle(
-                                                          height: 1.5,
-                                                          fontSize: 16.0,
-                                                          fontWeight:
-                                                              FontWeight.w800,
-                                                          color:
-                                                              Colors.black87),
-                                                    ),
-                                                  ),
+                                                      onTap: () {
+                                                        // Get.defaultDialog(
+                                                        //     backgroundColor:
+                                                        //         Colors.white
+                                                        //             .withOpacity(
+                                                        //                 0.90),
+                                                        //     titleStyle:
+                                                        //         const TextStyle(
+                                                        //       color: Colors.black,
+                                                        //     ),
+                                                        //     title: "Store Timing",
+                                                        //     content:
+                                                        //         dataTableWidget(
+                                                        //       _controller
+                                                        //           .model
+                                                        //           .value
+                                                        //           .data!
+                                                        //           .storeInfo
+                                                        //           .storeOpenClose
+                                                        //           .time,
+                                                        //     ));
+                                                        showDialog(
+                                                            context: context,
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return Dialog(
+                                                                  // shape: RoundedRectangleBorder(
+                                                                  //     borderRadius:
+                                                                  //         BorderRadius.circular(
+                                                                  //             40)),
+                                                                  elevation: 16,
+                                                                  child: Column(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    children: [
+                                                                      Text(
+                                                                          'Store Timing'),
+                                                                      dataTableWidget(
+                                                                        _controller
+                                                                            .model
+                                                                            .value
+                                                                            .data!
+                                                                            .storeInfo
+                                                                            .storeOpenClose
+                                                                            .time,
+                                                                      )
+                                                                    ],
+                                                                  ));
+                                                            });
+                                                      },
+                                                      child: Text(
+                                                        'Store Time',
+                                                              style: TextStyle(
+                                                                  height: 1.5,
+                                                                  fontSize:
+                                                                      16.0,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w800,
+                                                                  color: Colors
+                                                                      .black87),
+                                                            )) : const Text('Always open', style: TextStyle(
+          height: 1.5,
+          fontSize:
+          16.0,
+          fontWeight:
+          FontWeight
+              .w800,
+          color: Colors
+              .black87),),
                                                   const VerticalDivider(
                                                     color: Colors.grey,
                                                   ),
@@ -465,7 +518,7 @@ class HostsScreenState extends State<HostsScreen> {
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.0),
                             child: Text(
-                              'Popular Dishes',
+                              'Popular Products',
                               style: TextStyle(
                                   color: AppTheme.textColorDarkBLue,
                                   fontSize: 18,
@@ -558,23 +611,33 @@ class HostsScreenState extends State<HostsScreen> {
                     Expanded(
                         child: Text(
                             time[index].openingTime.isEmpty
-                                ? "N/A"
+                                ? "Open"
                                 : time[index].openingTime.toString(),
                             textAlign: TextAlign.center)),
                     const VerticalDivider(width: 2, color: Colors.red),
                     Expanded(
                         child: Text(
                             time[index].closingTime.isEmpty
-                                ? "N/A"
+                                ? "Open"
                                 : time[index].closingTime.toString(),
                             textAlign: TextAlign.center)),
                     const VerticalDivider(width: 2, color: Colors.red),
+
                   ],
                 ),
               ),
+              const Divider(),
               // Divider(),
             ],
           );
         }));
+  }
+
+  _clicktoCall() async {
+    var url;
+
+    url = 'tel:${_controller.model.value.data!.storeInfo.storePhone}';
+
+    await launch(url);
   }
 }

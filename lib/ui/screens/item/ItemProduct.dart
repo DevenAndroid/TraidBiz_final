@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dinelah/controller/BottomNavController.dart';
-import 'package:dinelah/controller/WishListController.dart';
-import 'package:dinelah/models/PopularProduct.dart';
-import 'package:dinelah/repositories/add_to_wishlist_repository.dart';
-import 'package:dinelah/repositories/get_update_cart_repository.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/screens/item/ItemVariationBottomSheet.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
+import 'package:traidbiz/controller/BottomNavController.dart';
+import 'package:traidbiz/controller/WishListController.dart';
+import 'package:traidbiz/models/PopularProduct.dart';
+import 'package:traidbiz/repositories/add_to_wishlist_repository.dart';
+import 'package:traidbiz/repositories/get_update_cart_repository.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/screens/item/ItemVariationBottomSheet.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -103,11 +103,11 @@ class ItemProductState extends State<ItemProduct> {
                             placeholder: (context, url) => Container(
                                 height: 4,
                                 width: 4,
-                                child: CircularProgressIndicator(
+                                child: const CircularProgressIndicator(
                                   color: AppTheme.primaryColor,
                                 )),
                             errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+                                const Icon(Icons.error),
                           ),
                           // Image.network(
                           //   widget.popularProducts[widget.index].imageUrl,
@@ -154,7 +154,7 @@ class ItemProductState extends State<ItemProduct> {
                   ),
                 ),
                 addHeight(
-                  widget.itemHeight / 40,
+                  widget.itemHeight / 70,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -181,7 +181,9 @@ class ItemProductState extends State<ItemProduct> {
                               // ++bottomNavController.cartBadgeCount.value;
                               bottomNavController.getData();
                               showToast(value.message.toString());
-                            } else {}
+                            } else {
+                              showToast(value.message.toString());
+                            }
                             return;
                           });
                         } else if (widget.popularProducts[widget.index].type
@@ -207,7 +209,7 @@ class ItemProductState extends State<ItemProduct> {
                         ),
                         child: Icon(
                           Icons.add,
-                          size: widget.itemHeight / 20,
+                          size: widget.itemHeight / 10,
                           color: AppTheme.colorWhite,
                         ),
                       ),

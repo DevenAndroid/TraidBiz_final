@@ -1,7 +1,7 @@
-import 'package:dinelah/controller/MySubOrdersController.dart';
-import 'package:dinelah/models/ModelSingleOrder.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
+import 'package:traidbiz/controller/MySubOrdersController.dart';
+import 'package:traidbiz/models/ModelSingleOrder.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

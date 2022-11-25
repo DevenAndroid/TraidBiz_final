@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:card_swiper/card_swiper.dart';
-import 'package:dinelah/controller/SearchController.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/ui/screens/item/ItemProduct.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:traidbiz/controller/SearchController.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/ui/screens/item/ItemProduct.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -13,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../controller/GetHomeController.dart';
 import '../../models/ModelHomeData.dart';
+import '../../repositories/update_user_currency.dart';
 import '../../routers/my_router.dart';
 
 class DashBoardScreen extends StatefulWidget {
@@ -30,6 +35,12 @@ class DashBoardScreenState extends State<DashBoardScreen> {
   void deactivate() {
     super.deactivate();
     _controller.onClose();
+    // InternetConnectionChecker().onStatusChange.listen((status) {
+    //   final connected = status == InternetConnectionStatus.connected;
+    //   showSimpleNotification(
+    //       Text(connected ? "Connected to internet" : "NO INTERNET FOUND"),
+    //       background: Colors.green);
+    // });
   }
 
   bool servicestatus = false;
@@ -81,7 +92,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                   "Location",
                 ),
                 content: const Text(
-                  "Please turn on GPS location service to narrow down the nearest eateries.",
+                  "Please turn on GPS location service to narrow down the nearest Stores.",
                 ),
                 actions: <Widget>[
                   TextButton(
@@ -173,158 +184,178 @@ class DashBoardScreenState extends State<DashBoardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // InternetConnectionChecker.createInstance(
+    //         checkInterval: const Duration(
+    //           seconds: 5,
+    //         ),
+    //         checkTimeout: const Duration(seconds: 1))
+    //     .onStatusChange
+    //     .listen((status) {
+    //   final connected = status == InternetConnectionStatus.connected;
+    //   if (connected == true) {
+    //     return;
+    //   } else {
+    //     connected
+    //         ? showToast("Connected to internet")
+    //         : showToast("No Internet Found, please check internet connection");
+    //   }
+    // });
+
     final screenSize = MediaQuery.of(context).size;
     final double itemHeight = screenSize.height / 2.8;
     final double itemWidth = screenSize.width / 2;
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Obx(() {
-        return !_controller.isDataLoading.value
-            ? Center(child: loader(context))
-            : Padding(
-                padding: const EdgeInsets.only(
-                    top: 4.0, left: 16.0, right: 16.0, bottom: 12),
-                child: CustomScrollView(
-                  slivers: <Widget>[
-                    SliverToBoxAdapter(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Text(servicestatus
-                        //     ? "GPS is Enabled"
-                        //     : "GPS is disabled."),
-                        // Text(haspermission
-                        //     ? "GPS is Enabled"
-                        //     : "GPS is disabled."),
-                        // Text("Longitude: $long",
-                        //     style: TextStyle(fontSize: 20)),
-                        // Text(
-                        //   "Latitude: $lat",
-                        //   style: TextStyle(fontSize: 20),
-                        // ),
-                        const Text(
-                          'Lets You Find\nGood Quality Food',
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontFamily: 'popins',
-                              color: AppTheme.colorWhite),
-                        ),
-                        addHeight(20),
-                        searchView(context, () {
-                          applySearch(context);
-                        }, searchController),
-                        addHeight(20),
-                        Container(
-                          height: screenSize.height * 0.18,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15)),
-                          child: Swiper(
-                            autoplay: true,
-                            outer: false,
-                            autoplayDisableOnInteraction: false,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Image.network(
-                                _controller
-                                    .model.value.data!.slider.slides[0].url
-                                    .toString(),
-                                fit: BoxFit.cover,
-                                loadingBuilder: (BuildContext context,
-                                    Widget child,
-                                    ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 10.0, bottom: 10.0),
-                                      child: CircularProgressIndicator(
-                                        color: AppTheme.addToCartColorDK,
-                                        value: loadingProgress
-                                                    .expectedTotalBytes !=
-                                                null
-                                            ? loadingProgress
-                                                    .cumulativeBytesLoaded /
-                                                loadingProgress
-                                                    .expectedTotalBytes!
-                                            : null,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            itemCount: _controller
-                                .model.value.data!.slider.slides.length,
-                            pagination: const SwiperPagination(),
-                            control:
-                                const SwiperControl(size: 0), // remove arrows
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Obx(() {
+          return !_controller.isDataLoading.value
+              ? Center(child: loader(context))
+              : Padding(
+                  padding: const EdgeInsets.only(
+                      top: 4.0, left: 16.0, right: 16.0, bottom: 12),
+                  child: CustomScrollView(
+                    slivers: <Widget>[
+                      SliverToBoxAdapter(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Text(servicestatus
+                          //     ? "GPS is Enabled"
+                          //     : "GPS is disabled."),
+                          // Text(haspermission
+                          //     ? "GPS is Enabled"
+                          //     : "GPS is disabled."),
+                          // Text("Longitude: $long",
+                          //     style: TextStyle(fontSize: 20)),
+                          // Text(
+                          //   "Latitude: $lat",
+                          //   style: TextStyle(fontSize: 20),
+                          // ),
+                          const Text(
+                            'Lets Find\nGood Quality Products',
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontFamily: 'popins',
+                                color: AppTheme.colorWhite),
                           ),
+                          addHeight(20),
+                          searchView(context, () {
+                            applySearch(context);
+                          }, searchController),
+                          addHeight(20),
+                          Container(
+                            height: screenSize.height * 0.18,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Swiper(
+                              autoplay: true,
+                              outer: false,
+                              autoplayDisableOnInteraction: false,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Image.network(
+                                  _controller.model.value.data!.slider.slides[index].url
+                                      .toString(),
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (BuildContext context,
+                                      Widget child,
+                                      ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 10.0, bottom: 10.0),
+                                        child: CircularProgressIndicator(
+                                          color: AppTheme.addToCartColorDK,
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              itemCount: _controller.model.value.data!.slider.slides.length,
+                              pagination: const SwiperPagination(),
+                              control: const SwiperControl(size: 0), // remove arrows
+                            ),
+                          ),
+                          addHeight(20),
+                          SizedBox(
+                            height: screenSize.height * 0.05,
+                            child: ListView.builder(
+                                itemCount: _controller.model.value.data!.category.categories.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  return categoryList(
+                                      _controller.model.value.data!.category.categories,
+                                      index);
+                                }),
+                          ),
+
+                          const Text(
+                            'Popular Products',
+                            style: TextStyle(
+                                color: AppTheme.textColorDarkGreyDK,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          addHeight(10),
+                        ],
+                      )),
+                      SliverGrid(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: (itemWidth / itemHeight),
+                            mainAxisSpacing: 10.0,
+                            crossAxisSpacing: 10.0),
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return ItemProduct(
+                                _controller,
+                                _controller.model.value.data!.popularProducts,
+                                index,
+                                itemHeight,
+                                false);
+                          },
+                          childCount: _controller.model.value.data!.popularProducts.length,
                         ),
-                        addHeight(20),
-                        SizedBox(
-                          height: screenSize.height * 0.05,
-                          child: ListView.builder(
-                              itemCount: _controller
-                                  .model.value.data!.category.categories.length,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return categoryList(
-                                    _controller
-                                        .model.value.data!.category.categories,
-                                    index);
-                              }),
-                        ),
-                        addHeight(20),
-                        const Text(
-                          'Popular Dishes',
-                          style: TextStyle(
-                              color: AppTheme.textColorDarkGreyDK,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        addHeight(10),
-                      ],
-                    )),
-                    SliverGrid(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: (itemWidth / itemHeight),
-                          mainAxisSpacing: 10.0,
-                          crossAxisSpacing: 10.0),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return ItemProduct(
-                              _controller,
-                              _controller.model.value.data!.popularProducts,
-                              index,
-                              itemHeight,
-                              false);
-                        },
-                        childCount: _controller
-                            .model.value.data!.popularProducts.length,
                       ),
-                    ),
-                    const SliverPadding(
-                      padding: EdgeInsets.only(bottom: 80.0),
-                    )
-                  ],
-                ),
-              );
-      }),
+                      const SliverPadding(
+                        padding: EdgeInsets.only(bottom: 80.0),
+                      )
+                    ],
+                  ),
+                );
+        }),
+      ),
     );
   }
 
   void applySearch(BuildContext context) {
-    final controller = Get.put(SearchController());
-    controller.context = context;
+    var controller = Get.put(SearchController());
     if (searchController.text.isEmpty) {
       showToast('Please enter something to search');
     } else {
-      Get.toNamed(MyRouter.searchProductScreen,
-          arguments: [searchController.text]);
-      FocusManager.instance.primaryFocus?.unfocus();
+      Future.delayed(const Duration(milliseconds: 2000), () {
+        setState(() {
+          controller.searchKeyboard.value = searchController.text;
+          print('SEARCH PARAM ::   ${searchController.text}');
+          Get.toNamed(MyRouter.searchProductScreen,
+              arguments: [searchController.text]);
+          searchController.clear();
+          FocusManager.instance.primaryFocus?.unfocus();
+        });
+      });
     }
   }
 
@@ -334,12 +365,13 @@ class DashBoardScreenState extends State<DashBoardScreen> {
         Get.toNamed(MyRouter.categoryScreen, arguments: [
           categories,
           categories[index].termId,
+          index,
         ]);
       },
       child: Container(
           margin: const EdgeInsets.only(right: 10),
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          decoration: BoxDecoration(boxShadow: [
+          decoration: BoxDecoration(boxShadow: const [
             BoxShadow(
               color: Colors.grey,
               blurRadius: 1.0,
@@ -397,5 +429,30 @@ class DashBoardScreenState extends State<DashBoardScreen> {
             ),
           )),
     );
+  }
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Are you sure?'),           // To display the title it is optional
+        content: const Text('Do you want to exit App'),   // Message which will be pop up on the screen
+        // Action widget which will provide the user to acknowledge the choice
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              showToast("clicked No");
+              Navigator.of(context).pop(false);
+            },             // function used to perform after pressing the button
+            child: const Text('No',style: TextStyle(color: Colors.black),),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+              },
+            child: const Text('Yes',style: TextStyle(color: Colors.black),),
+          ),
+        ],
+      ),
+    )) ?? false;
   }
 }

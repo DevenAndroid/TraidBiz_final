@@ -1,7 +1,7 @@
-import 'package:dinelah/controller/ProfileController.dart';
-import 'package:dinelah/models/ModelHomeData.dart';
-import 'package:dinelah/repositories/get_home_data_repository.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
+import 'package:traidbiz/controller/ProfileController.dart';
+import 'package:traidbiz/models/ModelHomeData.dart';
+import 'package:traidbiz/repositories/get_home_data_repository.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:get/get.dart';
 
 class GetHomeController extends GetxController {

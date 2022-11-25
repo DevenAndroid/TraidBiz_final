@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:badges/badges.dart';
-import 'package:dinelah/controller/BottomNavController.dart';
-import 'package:dinelah/controller/CustomNavigationBarController.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/routers/my_router.dart';
-import 'package:dinelah/ui/screens/wishList_screen.dart';
-import 'package:dinelah/ui/widget/AppBar.dart';
+import 'package:traidbiz/controller/BottomNavController.dart';
+import 'package:traidbiz/controller/CustomNavigationBarController.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/screens/wishList_screen.dart';
+import 'package:traidbiz/ui/widget/AppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -84,7 +84,7 @@ class CustomNavigationBarState extends State<CustomNavigationBar> {
       }
       switch (_selectedIndex) {
         case 0:
-          title = 'All Hosts';
+          title = 'Stores';
           break;
         case 1:
           title = 'My cart';
@@ -121,6 +121,7 @@ class CustomNavigationBarState extends State<CustomNavigationBar> {
         key: _scaffoldKey,
         drawer: CustomDrawer(_onItemTapped),
         appBar: buildAppBar(
+          context,
           false,
           title,
           _scaffoldKey,

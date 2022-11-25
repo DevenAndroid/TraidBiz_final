@@ -1,7 +1,9 @@
 import 'package:client_information/client_information.dart';
-import 'package:dinelah/repositories/user_signup_repository.dart';
-import 'package:dinelah/res/app_assets.dart';
-import 'package:dinelah/res/strings.dart';
+import 'package:country_pickers/country.dart';
+import 'package:country_pickers/country_pickers.dart';
+import 'package:traidbiz/repositories/user_signup_repository.dart';
+import 'package:traidbiz/res/app_assets.dart';
+import 'package:traidbiz/res/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 import '../../helper/Helpers.dart';
+import '../../repositories/verify_signup_user_email_repo.dart';
 import '../../res/theme/theme.dart';
 import '../../routers/my_router.dart';
 import '../widget/common_button.dart';
@@ -22,6 +25,9 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  String? countryPostCode;
+  String? countryIsoCode;
+
   var userNameController = TextEditingController();
   var mobileController = TextEditingController();
   var passwordController = TextEditingController();
@@ -101,7 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
             Positioned(
-                bottom: 32,
+                bottom: 24,
                 child: SingleChildScrollView(
                   child: Form(
                     key: formKey,
@@ -120,17 +126,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               padding: const EdgeInsets.all(16.0),
                               child: Column(
                                 children: [
-                                  addHeight(38),
+                                  addHeight(32),
                                   Text(
                                     Strings.buttonSignUp,
                                     style: const TextStyle(
                                         color: AppTheme.newprimaryColor,
                                         fontWeight: FontWeight.w900,
-                                        fontSize: 28),
+                                        fontSize: 20),
                                   ),
-                                  addHeight(8),
+                                  addHeight(2),
                                   labelText(Strings.signUpToYourAccount),
-                                  addHeight(24),
+                                  addHeight(16),
                                   CommonTextFieldWidgetSignUp(
                                     hint: 'Email',
                                     controller: userNameController,
@@ -138,15 +144,77 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     isPassword: false,
                                     type: '1',
                                   ),
-                                  addHeight(12),
-                                  CommonTextFieldWidgetSignUp(
-                                    hint: Strings.mobileNumber,
-                                    controller: mobileController,
-                                    icon: Icons.phone_android_outlined,
-                                    isPassword: false,
-                                    type: '2',
+                                  addHeight(8),
+                                  IntrinsicHeight(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(color: AppTheme.primaryColorVariant,width: 1.0,),
+                                          borderRadius: BorderRadius.circular(5.0)
+                                      ),
+                                      child: CountryPickerDropdown(
+                                        isExpanded: true,
+                                        initialValue: 'fj',
+                                        itemBuilder: _buildDropdownItem,
+                                        onValuePicked: (Country country) {
+                                          print(country.name);
+                                          print(country.phoneCode);
+                                          countryPostCode = country.phoneCode;
+                                          countryIsoCode = country.isoCode.toLowerCase();
+                                          print("object$countryPostCode");
+                                          print("object1$countryIsoCode");
+
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                  addHeight(12),
+                                  addHeight(8),
+                                  IntrinsicHeight(
+                                      child: Expanded(
+                                        flex: 3,
+                                        child: TextFormField(
+                                          controller: mobileController,
+                                          // obscureText: isPasswordShow.value,
+                                          validator: (value) {if (value!.trim().isEmpty) {
+                                              return 'Mobile Number can\'t be empty.';
+                                            }},
+                                          keyboardType: TextInputType.number,
+                                          textInputAction: TextInputAction.next,
+                                          decoration: InputDecoration(
+                                              hintText: Strings.mobileNumber,
+                                              counterText: "",
+                                              filled: true,
+                                              errorMaxLines: 2,
+                                              fillColor: AppTheme.colorEditFieldBg,
+                                              focusColor: AppTheme.colorEditFieldBg,
+                                              contentPadding:
+                                              const EdgeInsets.symmetric(horizontal: 8, vertical: 18),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(color: AppTheme.primaryColorVariant),
+                                                borderRadius: BorderRadius.circular(5.0),
+                                              ),
+                                              enabledBorder: const OutlineInputBorder(
+                                                  borderSide:
+                                                  BorderSide(color: AppTheme.primaryColorVariant),
+                                                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                                              border: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: AppTheme.primaryColor, width: 2.0),
+                                                  borderRadius: BorderRadius.circular(5.0)),
+                                              // prefixIcon: CountryPickerDropdown(
+                                              //   initialValue: 'in',
+                                              //   itemBuilder: _buildDropdownItem,
+                                              //   onValuePicked: (Country country) {
+                                              //     print("${country.name}");
+                                              //     print("${country.phoneCode}");
+                                              //   },
+                                              // ),
+                                              prefixIcon: const Icon(Icons.phone_android_outlined),
+                                              suffixIcon: const SizedBox.shrink()),
+                                        ),
+                                      ),
+                                    ),
+                                  addHeight(8),
                                   Obx(() => IntrinsicHeight(
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
@@ -157,15 +225,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 obscureText:
                                                     isPasswordShow.value,
                                                 validator: (value) {
-                                                  if (value!.trim().isEmpty) {
-                                                    return 'Please enter password';
-                                                  } else if (value.length < 4) {
-                                                    return 'Password must be greater then 6';
-                                                  } else if (value.length >
-                                                      16) {
-                                                    return 'Password must be less then 16';
+                                                  // if (value!.trim().isEmpty)
+                                                  // {
+                                                  //   return 'Please enter password';
+                                                  // } else if (value.length < 8) {
+                                                  //   return 'Password must be greater then 8';
+                                                  // } else if (value.length >
+                                                  //     24) {
+                                                  //   return 'Password must be less then 24';
+                                                  // }
+                                                  if (value!.contains(RegExp(
+                                                      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$'))) {
+                                                  } else {
+                                                    return 'Password must contain\n1 upper case\n1 lower case\n1 digit and\n1 special character';
                                                   }
-                                                  return null;
                                                 },
                                                 keyboardType:
                                                     TextInputType.text,
@@ -237,7 +310,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           ],
                                         ),
                                       )),
-                                  addHeight(12),
+                                  addHeight(8),
                                   Obx(() => IntrinsicHeight(
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
@@ -252,7 +325,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                   if (value!.trim().isEmpty) {
                                                     return 'Please enter confirm password';
                                                   } else if (value.length < 4) {
-                                                    return 'Confirm password must be greater then 6';
+                                                    return 'Confirm password must be greater then 8';
                                                   } else if (value.length >
                                                       16) {
                                                     return 'Confirm password must be less then 16';
@@ -338,7 +411,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           ],
                                         ),
                                       )),
-                                  addHeight(24),
+                                  addHeight(16),
                                   Obx(
                                     () => CommonButton(
                                         buttonHeight: 6.5,
@@ -349,19 +422,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         isDataLoading: isDataLoading.value,
                                         textColor: Colors.white,
                                         onTap: () {
-                                          if (formKey.currentState!
-                                              .validate()) {
-                                            if (passwordController.text
-                                                    .trim() !=
-                                                passwordConfirmController.text
-                                                    .trim()) {
+                                          if (formKey.currentState!.validate()) {
+                                            if (passwordController.text.trim() !=
+                                                passwordConfirmController.text.trim()) {
                                               Helpers.createSnackBar(context,
                                                   'Password not matched');
                                             } else {
-                                              if (userLoginType ==
-                                                  socialTypeGoogle) {
+                                              if (socialTypeGoogle != null) {
                                                 register(
                                                         userNameController.text,
+                                                    countryPostCode!=null ? "+$countryPostCode" : "+679",
+                                                    countryIsoCode==null ?"fj":countryIsoCode.toString(),
                                                         mobileController.text,
                                                         passwordController.text,
                                                         googleAccessTokenId
@@ -371,10 +442,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                         context)
                                                     .then((value) async {
                                                   if (value.status) {
-                                                    getAlertDialog('Sign Up',
-                                                        value.message, () {
-                                                      Get.offAllNamed(
-                                                          MyRouter.logInScreen);
+                                                    getAlertDialog('Sign Up', value.message, () {Get.toNamed(
+                                                          MyRouter.verifyEmailScreen,
+                                                          arguments: [userNameController.text.toString()]);
                                                     });
                                                   } else {
                                                     getAlertDialog('Sign Up',
@@ -387,6 +457,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               } else {
                                                 register(
                                                         userNameController.text,
+                                                    countryPostCode!=null ? "+$countryPostCode" : "+679",
+                                                    countryIsoCode!=null ? "":"fj",
                                                         mobileController.text,
                                                         passwordController.text,
                                                         '',
@@ -394,10 +466,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                         context)
                                                     .then((value) async {
                                                   if (value.status) {
+                                                    verifySignupUserEmail(
+                                                        userNameController,
+                                                        context);
                                                     getAlertDialog('Sign Up',
                                                         value.message, () {
                                                       Get.offAndToNamed(
-                                                          MyRouter.logInScreen);
+                                                          MyRouter
+                                                              .verifyEmailScreen,
+                                                          arguments: [
+                                                            Get.arguments[0],
+                                                            userNameController
+                                                                .text
+                                                          ]);
                                                     });
                                                   } else {
                                                     getAlertDialog('Sign Up',
@@ -438,7 +519,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 )),
             Positioned(
-              bottom: 16,
+              bottom: 12,
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: Row(
@@ -472,4 +553,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+  Widget _buildDropdownItem(Country country) => Container(
+    child: Row(
+      children: <Widget>[
+        const SizedBox(
+          width: 12.0,
+        ),
+        CountryPickerUtils.getDefaultFlagImage(country),
+        const SizedBox(
+          width: 8.0,
+        ),
+        Expanded(child: Text("+${country.phoneCode}(${country.name})",overflow: TextOverflow.ellipsis,)),
+        // Text("+${country.phoneCode}"),
+      ],
+    ),
+  );
 }

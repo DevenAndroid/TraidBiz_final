@@ -1,4 +1,4 @@
-import 'package:dinelah/utils/ApiConstant.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class CustomNavigationBarController extends GetxController {

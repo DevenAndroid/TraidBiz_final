@@ -12,7 +12,6 @@ class Strings {
 
   //'No Product found'
   static var messageNoProduct = 'No Product found';
-
   static var orderId = 'Order Id: #';
   static var totalAmount = 'Total Amount: ';
 
@@ -21,14 +20,19 @@ class Strings {
   static var orders = 'My Orders';
   static var myBookings = 'My Bookings';
   static var account = 'My Account';
+  static var downloads = 'Downloads';
+  static var savedAddress = 'Saved Address';
+  static var myWallet = 'My Wallet';
   static var wishlist = 'Wishlist';
+  static var accountDetails = 'Account Details';
+  static var inquiries = 'Inquiries';
   static var address = 'My Address';
   static var logOut = 'Log Out';
   static var locations = 'Location';
   static var logindrawer = 'Login';
   static var shippingpolicy = 'Shipping Policy';
-  static var refundandreturnspolicy = 'Refunds and Returns Policy';
-  static var payments_options = 'Payments Options';
+  static var refundandreturnspolicy = 'Refunds and Returns';
+  static var payments_options = 'Payment Options';
   static var aboutUsDrawer = 'About Us';
   static var whyTraidbiz = 'Why TraidBiz';
   static var sellonTraidBiz = 'Sell On TraidBiz';
@@ -62,7 +66,7 @@ class Strings {
 
   static var phoneNumber = 'Phone Number';
   static var loginToYourAccount = 'Log in to your account';
-  static var signUpToYourAccount = 'Sign up to your account';
+  static var signUpToYourAccount = 'Register your account';
   static var forgotYourPassword = 'Reset your Password';
   static var signUp = 'Don\'t have an account? ';
   static var agree = 'I agree to ';

@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:dinelah/models/ModelProfileFields.dart';
+import 'package:traidbiz/models/ModelProfileFields.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/ModelLogIn.dart';
 import '../utils/ApiConstant.dart';
+import '../routers/my_router.dart';
+import 'package:get/get.dart';
 
 Future<ModelProfileFieldData> getProfileFieldData() async {
   var map = <String, dynamic>{};
@@ -34,6 +36,9 @@ Future<ModelProfileFieldData> getProfileFieldData() async {
     log("DEBUG PROFILE RESPONSE :: ${response.body}");
     return ModelProfileFieldData.fromJson(json.decode(response.body));
   } else {
+    Get.offAndToNamed(MyRouter.serverErrorUi,
+        arguments: [response.body.toString(), response.statusCode.toString()]);
+
     throw Exception(response.body);
   }
 }

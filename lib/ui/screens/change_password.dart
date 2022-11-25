@@ -1,13 +1,19 @@
-import 'package:dinelah/repositories/change_password_repository.dart';
-import 'package:dinelah/res/app_assets.dart';
-import 'package:dinelah/res/strings.dart';
-import 'package:dinelah/res/theme/theme.dart';
-import 'package:dinelah/ui/widget/common_button_white.dart';
-import 'package:dinelah/ui/widget/common_widget.dart';
+import 'package:client_information/client_information.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:traidbiz/repositories/change_password_repository.dart';
+import 'package:traidbiz/res/app_assets.dart';
+import 'package:traidbiz/res/strings.dart';
+import 'package:traidbiz/res/theme/theme.dart';
+import 'package:traidbiz/routers/my_router.dart';
+import 'package:traidbiz/ui/widget/common_button_white.dart';
+import 'package:traidbiz/ui/widget/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utils/ApiConstant.dart';
 import '../widget/common_text_field_forgot_password.dart';
 import 'bottom_Nav_Bar.dart';
 
@@ -22,9 +28,17 @@ class _ChangePasswordState extends State<ChangePassword> {
   var _oldPasswordController = TextEditingController();
   var _newPasswordController = TextEditingController();
   var _confirmPasswordController = TextEditingController();
-
+  SharedPreferences? pref;
+  bool isLogin = true;
   RxBool isDataLoading = false.obs;
   final formKey = GlobalKey<FormState>();
+  ClientInformation? _clientInfo;
+  getSf() async {
+    pref = await SharedPreferences.getInstance();
+    setState(() {
+      isLogin = pref!.getString('user') != null ? true : false;
+    });
+  }
 
   @override
   void initState() {
@@ -62,14 +76,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                         onTap: () {
                           Get.back();
                         },
-                        child: Icon(
+                        child: const Icon(
                           Icons.arrow_back_sharp,
                           color: Colors.white,
                           size: 26,
                         ),
                       ),
                       addWidth(12),
-                      Text(
+                      const Text(
                         'Change Password',
                         style: TextStyle(
                             color: Colors.white,
@@ -86,7 +100,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     width: 180,
                   )),
                   addHeight(screenSize.height * .06),
-                  Center(
+                  const Center(
                     child: Text(
                       'Change Password',
                       style: TextStyle(
@@ -96,17 +110,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                     ),
                   ),
                   addHeight(screenSize.height * .01),
-                  // Center(
-                  //   child: Text(
-                  //     'ChangePassword Lorem Ispus data for testing \n Lorem ipsum text',
-                  //     textAlign: TextAlign.center,
-                  //     style: TextStyle(
-                  //       color: Colors.white,
-                  //       fontSize: 15,
-                  //       fontWeight: FontWeight.w400,
-                  //     ),
-                  //   ),
-                  // ),
                   addHeight(screenSize.height * .03),
                   CommonTextFieldWidgetForgotPassword(
                     hint: Strings.enterYourOld,
@@ -114,6 +117,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     icon: Icons.lock,
                     bgColor: AppTheme.etBgColor,
                     isPassword: false,
+                    validator: (value) {},
                   ),
                   addHeight(screenSize.width * .05),
                   CommonTextFieldWidgetForgotPassword(
@@ -121,7 +125,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                     controller: _newPasswordController,
                     icon: Icons.lock,
                     bgColor: AppTheme.etBgColor,
-                    isPassword: false,
+                    isPassword: true,
+                    validator: (value) {},
                   ),
                   addHeight(screenSize.width * .05),
                   CommonTextFieldWidgetForgotPassword(
@@ -129,9 +134,24 @@ class _ChangePasswordState extends State<ChangePassword> {
                     controller: _confirmPasswordController,
                     icon: Icons.lock,
                     bgColor: AppTheme.etBgColor,
-                    isPassword: false,
+                    isPassword: true,
+                    validator: (value) {},
                   ),
-                  addHeight(screenSize.width * .08),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Get.toNamed(MyRouter.forgotPassword);
+                        },
+                        child: const Text(
+                          "Forgot Password.?",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                    ],
+                  ),
                   CommonButtonWhite(
                     buttonHeight: 6,
                     buttonWidth: 100,
@@ -141,30 +161,18 @@ class _ChangePasswordState extends State<ChangePassword> {
                     textColor: AppTheme.primaryColor,
                     onTap: () {
                       setState(() {
-                        if (_oldPasswordController.text.isEmpty &&
-                            _oldPasswordController.text.length <= 16) {
+                        if (_newPasswordController.text.contains(RegExp(
+                            r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{16,}$'))) {
                           Fluttertoast.showToast(
                             msg:
-                                "password can't be empty or can be upto 16 characters", // message
+                                "Password must contain\n1 upper case\n1 lower case\n1 digit and\n1 special character", // message
                             toastLength: Toast.LENGTH_SHORT, // length
                             gravity: ToastGravity.BOTTOM, // location
                             // duration
                           );
-                        } else if (_newPasswordController.text.isEmpty &&
-                            _newPasswordController.text.length <= 16) {
-                          Fluttertoast.showToast(
-                            msg:
-                                "password can't be empty or can be upto 16 characters", // message
-                            toastLength: Toast.LENGTH_SHORT, // length
-                            gravity: ToastGravity.BOTTOM, // location
-                            // duration
-                          );
-                          print("==========::::::::new password empty hai");
                         } else if (_confirmPasswordController.text.isEmpty ||
                             _confirmPasswordController.text !=
                                 _newPasswordController.text) {
-                          print(
-                              "==========::::::::Conform password empty hai ya same nhi hai new password ke");
                           Fluttertoast.showToast(
                             msg:
                                 "Confirm password either empty or not same", // message
@@ -173,32 +181,30 @@ class _ChangePasswordState extends State<ChangePassword> {
                             // duration
                           );
                         } else {
-                          print(
-                              "==========::::::::Confirm password same hai new password ke");
                           getChangePassword(
                                   context,
                                   _oldPasswordController.text.toString(),
                                   _confirmPasswordController.text.toString())
-                              .then((value) {
-                            print("==========::::::::change password method");
+                              .then((value) async {
                             if (value.status) {
-                              print(":::::::::::::====>>>>>>>" +
-                                  value.message.toString());
-                              // Fluttertoast.showToast(
-                              //   msg: value.message.toString(), // message
-                              //   toastLength: Toast.LENGTH_SHORT, // length
-                              //   gravity: ToastGravity.BOTTOM, // location
-                              //   // duration
-                              // );
                               _oldPasswordController.clear();
                               _newPasswordController.clear();
                               _confirmPasswordController.clear();
-                              Get.off(CustomNavigationBar(
-                                index: 2,
-                              ));
+                              _getClientInformation();
+                              Get.back();
+                              SharedPreferences preferences =
+                                  await SharedPreferences.getInstance();
+                              await preferences.clear();
+                              Get.offAllNamed(MyRouter.logInScreen,
+                                  arguments: ['mainScreen']);
+                              //
+                              // Get.offAndToNamed(MyRouter.logInScreen);
+                              showToast(value.message);
+
+                              // Get.off(const CustomNavigationBar(
+                              //   index: 2,
+                              // ));
                             } else {
-                              print(":::::::::::::====>>>>>>>" +
-                                  value.message.toString());
                               Fluttertoast.showToast(
                                 msg: value.message.toString(), // message
                                 toastLength: Toast.LENGTH_SHORT, // length
@@ -219,5 +225,21 @@ class _ChangePasswordState extends State<ChangePassword> {
         ),
       ),
     );
+  }
+
+  Future<void> _getClientInformation() async {
+    ClientInformation? info;
+    try {
+      info = await ClientInformation.fetch();
+    } on PlatformException {
+      // print('Failed to get client information');
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _clientInfo = info!;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('deviceId', _clientInfo!.deviceId.toString());
   }
 }

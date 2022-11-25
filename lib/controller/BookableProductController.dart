@@ -1,7 +1,7 @@
-import 'package:dinelah/models/ModelBookableProduct.dart';
-import 'package:dinelah/repositories/bookable_end_date.dart';
-import 'package:dinelah/repositories/get_Bookable_Product.dart';
-import 'package:dinelah/utils/ApiConstant.dart';
+import 'package:traidbiz/models/ModelBookableProduct.dart';
+import 'package:traidbiz/repositories/bookable_end_date.dart';
+import 'package:traidbiz/repositories/get_Bookable_Product.dart';
+import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
