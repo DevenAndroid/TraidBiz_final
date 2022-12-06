@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "887813448269-t3lia8o4b89sk2l2uth4gfdnc2c599ak.apps.googleusercontent.com",
+          "client_id": "887813448269-k7aaaig2soruj5rqkuqivb5nbpbhjnfp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.traidbiz.traidbiz",
-            "certificate_hash": "6bffe93a471d3eeb58affd709ce4cbde4a102d12"
+            "certificate_hash": "205c7d0d77c9701d6bf996964859863de86a5c0e"
           }
         },
         {
@@ -35,7 +35,36 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "887813448269-oo8rkqof1na69pvhofcmbno57ubctph3.apps.googleusercontent.com",
+              "client_id": "887813448269-6jgrg87k5ngqelasf725rgi03qv2dhpc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:887813448269:android:96e735c672a776e5ed3204",
+        "android_client_info": {
+          "package_name": "com.traidbiz_seller.traidbiz_seller"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "887813448269-oo8rkqof1na69pvhofcmbno57ubctph3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKiDjGrjbAITVBAdzLWVen3CgKFw33MjI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "887813448269-6jgrg87k5ngqelasf725rgi03qv2dhpc.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
