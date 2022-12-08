@@ -163,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Container(
               height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(
                     AppAssets.logInBg,
@@ -616,6 +616,7 @@ class _LoginScreenState extends State<LoginScreen> {
         oAuthCredential).catchError((e) {
       showToast(e.toString());
     }).then((value) async {
+      log(value.toString());
       getSocialLogin(context, value.user!.uid.toString(), "facebook", deviceId,
           value.additionalUserInfo!.profile!["email"],
           await FirebaseMessaging.instance.getToken()).then((value1) async {

@@ -99,94 +99,92 @@ class CartScreenState extends State<CartScreen> {
                                       );
                                     }),
                               ),
-                              Positioned(
-                                  bottom: 0,
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      addHeight(15),
+                                      _getPaymentDetails(
+                                          'Subtotal:',
+                                          _cartController.model.value.data!
+                                                  .cartmeta.currencySymbol +
+                                              _cartController.model.value
+                                                  .data!.cartmeta.subtotal),
+                                      addHeight(16),
+                                      _getPaymentDetails(
+                                        'Tax and fee:',
+                                        _cartController.model.value.data!
+                                                .cartmeta.currencySymbol +
+                                            _cartController.model.value
+                                                .data!.cartmeta.totalTax
+                                                .toString(),
+                                      ),
+                                      addHeight(16),
+                                      _getPaymentDetails(
+                                          'Delivery:', _cartController.model.value.data!
+                                          .cartmeta.shippingTotal),
+                                      addHeight(16),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          addHeight(15),
-                                          _getPaymentDetails(
-                                              'Subtotal:',
-                                              _cartController.model.value.data!
-                                                      .cartmeta.currencySymbol +
-                                                  _cartController.model.value
-                                                      .data!.cartmeta.subtotal),
-                                          addHeight(16),
-                                          _getPaymentDetails(
-                                            'Tax and fee:',
-                                            _cartController.model.value.data!
-                                                    .cartmeta.currencySymbol +
-                                                _cartController.model.value
-                                                    .data!.cartmeta.totalTax
-                                                    .toString(),
+                                          const Text(
+                                            'Total:',
+                                            style: TextStyle(
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: AppTheme
+                                                    .addToCartColorDK),
                                           ),
-                                          addHeight(16),
-                                          _getPaymentDetails(
-                                              'Delivery:', _cartController.model.value.data!
-                                              .cartmeta.shippingTotal),
-                                          addHeight(16),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Text(
-                                                'Total:',
-                                                style: TextStyle(
-                                                    fontSize: 20.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: AppTheme
-                                                        .addToCartColorDK),
-                                              ),
-                                              Text(
-                                                _cartController
+                                          Text(
+                                            _cartController
+                                                    .model
+                                                    .value
+                                                    .data!
+                                                    .cartmeta
+                                                    .currencySymbol +
+                                                _cartController.model.value
+                                                    .data!.cartmeta.total
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey),
+                                          ),
+                                        ],
+                                      ),
+                                      addHeight(24),
+                                      CommonButton(
+                                          buttonHeight: 6.5,
+                                          buttonWidth: 100,
+                                          text: 'CHECKOUT',
+                                          onTap: () async {
+                                            SharedPreferences pref = await SharedPreferences.getInstance();
+                                            if (pref.getString('user') != null) {
+                                              Get.toNamed(
+                                                  MyRouter.checkoutScreen,
+                                                  arguments: [_cartController
                                                         .model
                                                         .value
                                                         .data!
                                                         .cartmeta
-                                                        .currencySymbol +
-                                                    _cartController.model.value
-                                                        .data!.cartmeta.total
-                                                        .toString(),
-                                                style: const TextStyle(
-                                                    fontSize: 20.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
-                                          ),
-                                          addHeight(24),
-                                          CommonButton(
-                                              buttonHeight: 6.5,
-                                              buttonWidth: 100,
-                                              text: 'CHECKOUT',
-                                              onTap: () async {
-                                                SharedPreferences pref = await SharedPreferences.getInstance();
-                                                if (pref.getString('user') != null) {
-                                                  Get.toNamed(
-                                                      MyRouter.checkoutScreen,
-                                                      arguments: [_cartController
-                                                            .model
-                                                            .value
-                                                            .data!
-                                                            .cartmeta
-                                                            .currencySymbol,
-                                                      ]);
-                                                } else {
-                                                  Get.toNamed(MyRouter.logInScreen);
-                                                }
-                                              },
-                                              mainGradient: AppTheme
-                                                  .primaryGradientColor),
-                                          addHeight(10),
-                                        ],
-                                      ),
-                                    ),
-                                  )),
+                                                        .currencySymbol,
+                                                  ]);
+                                            } else {
+                                              Get.toNamed(MyRouter.logInScreen);
+                                            }
+                                          },
+                                          mainGradient: AppTheme
+                                              .primaryGradientColor),
+                                      addHeight(10),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                   )
@@ -291,7 +289,7 @@ class CartScreenState extends State<CartScreen> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    showToast("Cart Updated");
+                                    showToast("Order Updated");
                                     if (kDebugMode) {
                                       print("tem.product!.id for -1${item.product!.id}");
                                     }
@@ -340,7 +338,7 @@ class CartScreenState extends State<CartScreen> {
                                 addWidth(10),
                                 InkWell(
                                   onTap: () {
-                                    showToast("Cart Updated");
+                                    showToast("Order Updated");
                                     getUpdateCartData(
                                             context, item.product!.id, 1)
                                         .then((value) async {
@@ -374,41 +372,38 @@ class CartScreenState extends State<CartScreen> {
                             )
                     ],
                   )),
-              Positioned(
-                  top: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: () {
-                      showToast("Item removed from cart");
+              GestureDetector(
+                onTap: () {
+                  showToast("Item removed from cart");
 
-                      getUpdateCartData(context, item.product!.id, 0)
-                          .then((value) async {
-                        if (value.status) {
-                          setState(() {
-                            // item.quantity = item.quantity + 1;
-                            getCartData()
-                                .then((value) =>
-                                    _cartController.model.value = value)
-                                .then((value) {
-                              if (value.status!) {
-                                bottomNavController.getData();
-                              }
-                              return null;
-                            });
-                          });
-                        } else {
-                          Helpers.createSnackBar(
-                              context, value.message.toString());
-                        }
-                        return;
+                  getUpdateCartData(context, item.product!.id, 0)
+                      .then((value) async {
+                    if (value.status) {
+                      setState(() {
+                        // item.quantity = item.quantity + 1;
+                        getCartData()
+                            .then((value) =>
+                                _cartController.model.value = value)
+                            .then((value) {
+                          if (value.status!) {
+                            bottomNavController.getData();
+                          }
+                          return null;
+                        });
                       });
-                    },
-                    child: const Icon(
-                      Icons.cancel_outlined,
-                      size: 28,
-                      color: AppTheme.newprimaryColor,
-                    ),
-                  ))
+                    } else {
+                      Helpers.createSnackBar(
+                          context, value.message.toString());
+                    }
+                    return;
+                  });
+                },
+                child: const Icon(
+                  Icons.cancel_outlined,
+                  size: 28,
+                  color: AppTheme.newprimaryColor,
+                ),
+              )
             ],
           ),
         ),

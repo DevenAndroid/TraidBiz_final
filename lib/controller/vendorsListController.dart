@@ -50,12 +50,9 @@ class VendorsController extends GetxController {
     map['sort_by'] = '';
     map['rating'] = '';
     map['nearby'] = '';
-
-    isDataLoading.value = false;
     getVendorStores(map).then((value) {
       isDataLoading.value = true;
       model.value = value;
-      return null;
     });
   }
 

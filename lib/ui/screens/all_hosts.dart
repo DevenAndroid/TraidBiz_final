@@ -26,13 +26,6 @@ class AllHostsScreenState extends State<AllHostsScreen> {
     controller.getResetData();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    // searchController.clear();
-    controller.onClose();
-  }
-
   void applySearch(BuildContext context) {
     if (searchController.text.isEmpty) {
       showToast('Please enter something to search');
@@ -51,8 +44,8 @@ class AllHostsScreenState extends State<AllHostsScreen> {
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: Obx(() {
-          // controller.context = context;
-          return !controller.isDataLoading.value
+          return
+            !controller.isDataLoading.value
               ? loader(context)
               : SingleChildScrollView(
                   child: SizedBox(
