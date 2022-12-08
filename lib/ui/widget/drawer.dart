@@ -158,12 +158,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 //       }
                 //     }),
                  ExpansionTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.person_outline,
                       size: 22,
                       color: AppTheme.textColorDarkBLue,
                     ),
-                    title: Text('My Account Settings'),
+                    title: const Text('My Account Settings'),
                     children: [
                       _drawerTile(
                           active: true,

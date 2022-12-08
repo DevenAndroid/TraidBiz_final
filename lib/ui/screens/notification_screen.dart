@@ -8,8 +8,6 @@ import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../widget/common_widget.dart';
-
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
 
@@ -18,9 +16,10 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class NotificationScreenState extends State<NotificationScreen> {
-  // late Future<ModelNotificationData> future;
 
   final controller = Get.put(NotificationScreenController());
+
+  // Get.toNamed(MyRouter.subOrderDetail, arguments: [order.id]);
 
   @override
   void initState() {
@@ -51,7 +50,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                 : SingleChildScrollView(
                     child: Column(
                       children: [
-                        controller.model.value.data!.notifications.isEmpty
+                        controller.model.value.data!.notifications!.isEmpty
                             ? const SizedBox.shrink()
                             : Padding(
                                 padding: const EdgeInsets.all(8),
@@ -65,7 +64,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                                           if (value.status) {
                                             setState(() {
                                               controller.model.value.data!
-                                                  .notifications
+                                                  .notifications!
                                                   .clear();
                                             });
                                             Get.offAllNamed(
@@ -83,19 +82,19 @@ class NotificationScreenState extends State<NotificationScreen> {
                                       )),
                                 ),
                               ),
-                        controller.model.value.data!.notifications.isEmpty
+                        controller.model.value.data!.notifications!.isEmpty
                             ? getNoDataFound(
                                 screenSize, 'No notification Found')
                             : ListView.builder(
                                 itemCount: controller
-                                    .model.value.data!.notifications.length,
+                                    .model.value.data!.notifications!.length,
                                 //scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemBuilder: (context, index) {
                                   return notificationList(
                                       controller
-                                          .model.value.data!.notifications,
+                                          .model.value.data!.notifications!,
                                       index);
                                 })
                       ],
@@ -109,65 +108,73 @@ class NotificationScreenState extends State<NotificationScreen> {
   Widget notificationList(List<Notifications> notifications, int index) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
-      child: Card(
-        elevation: 0,
-        child: Row(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.03,
-            ),
-            Expanded(
-              flex: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF100012 * (index + 1)),
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
-                ),
-                height: MediaQuery.of(context).size.height * 0.07,
+      child: InkWell(
+        onTap: (){
+          if(notifications[index].orderId != null && notifications[index].orderId.toString() != "") {
+            Get.toNamed(MyRouter.subOrderDetail,
+                arguments: [notifications[index].orderId.toString()]);
+          }
+        },
+        child: Card(
+          elevation: 0,
+          child: Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.03,
               ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.03,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: Container(
-                width: 55,
-                height: 55,
-                child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(100)),
-                    child: Image.asset(
-                      AppAssets.hostBanner,
-                      //snapshot.data!.data.notifications[index].image,
-                      fit: BoxFit.fill,
-                    ) //Text('A', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold ),),
-                    ),
-              ),
-            ),
-            Expanded(
-              flex: 40,
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(12, 8, 8, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(notifications[index].title),
-                    //textBold(snapshot.data!.data.notifications[index].title),
-                    addHeight(4),
-                    Text(
-                      notifications[index].description,
-                      //snapshot.data!.data.notifications[index].message,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          height: 1.2, color: Colors.black54, fontSize: 14),
-                    )
-                  ],
+              Expanded(
+                flex: 1,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFF100012 * (index + 1)),
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  ),
+                  height: MediaQuery.of(context).size.height * 0.07,
                 ),
               ),
-            ),
-          ],
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.03,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                child: SizedBox(
+                  width: 55,
+                  height: 55,
+                  child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(100)),
+                      child: Image.asset(
+                        AppAssets.hostBanner,
+                        //snapshot.data!.data.notifications[index].image,
+                        fit: BoxFit.fill,
+                      ) //Text('A', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold ),),
+                      ),
+                ),
+              ),
+              Expanded(
+                flex: 40,
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(12, 8, 8, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(notifications[index].title ??""),
+                      //textBold(snapshot.data!.data.notifications[index].title),
+                      addHeight(4),
+                      Text(
+                        notifications[index].description??"",
+                        //snapshot.data!.data.notifications[index].message,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            height: 1.2, color: Colors.black54, fontSize: 14),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

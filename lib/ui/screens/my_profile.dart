@@ -358,7 +358,7 @@ class _MyProfileState extends State<MyProfile> {
             borderRadius: BorderRadius.circular(5),
           ),
           enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
+            borderSide: const BorderSide(color: Colors.white),
             borderRadius: BorderRadius.circular(5),
           ),
         ),
@@ -380,14 +380,12 @@ class _MyProfileState extends State<MyProfile> {
       debugPrint('Failed to pic image: $e');
     }
   }
-  Widget _buildDropdownItemNew(Country country) => Container(
-    child: Row(
-      children: <Widget>[
-        CountryPickerUtils.getDefaultFlagImage(country),
-        SizedBox(width: 8,),
-        // Text("+${country.phoneCode}(${country.isoCode})"),
-        Text("+${country.phoneCode}"),
-      ],
-    ),
+  Widget _buildDropdownItemNew(Country country) => Row(
+    children: <Widget>[
+      CountryPickerUtils.getDefaultFlagImage(country),
+      const SizedBox(width: 8,),
+      // Text("+${country.phoneCode}(${country.isoCode})"),
+      Text("+${country.phoneCode}"),
+    ],
   );
 }

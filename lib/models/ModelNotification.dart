@@ -1,76 +1,79 @@
 class ModelNotificationData {
-  ModelNotificationData({
-    this.status,
-    this.message,
-    this.data,
-  });
-  bool? status;
   String? message;
+  bool? status;
   Data? data;
 
+  ModelNotificationData({this.message, this.status, this.data});
+
   ModelNotificationData.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
     message = json['message'];
-    data = Data.fromJson(json['data']);
+    status = json['status'];
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['status'] = status;
-    _data['message'] = message;
-    _data['data'] = data!.toJson();
-    return _data;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['message'] = message;
+    data['status'] = status;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    return data;
   }
 }
 
 class Data {
-  Data({
-    required this.count,
-    required this.notifications,
-  });
-  late final int count;
-  late final List<Notifications> notifications;
+  int? count;
+  List<Notifications>? notifications;
+
+  Data({this.count, this.notifications});
 
   Data.fromJson(Map<String, dynamic> json) {
     count = json['count'];
-    notifications = List.from(json['notifications'])
-        .map((e) => Notifications.fromJson(e))
-        .toList();
+    if (json['notifications'] != null) {
+      notifications = <Notifications>[];
+      json['notifications'].forEach((v) {
+        notifications!.add(Notifications.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['count'] = count;
-    _data['notifications'] = notifications.map((e) => e.toJson()).toList();
-    return _data;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['count'] = count;
+    if (notifications != null) {
+      data['notifications'] =
+          notifications!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
 }
 
 class Notifications {
-  Notifications({
-    required this.date,
-    required this.title,
-    required this.description,
-    required this.icon,
-  });
-  late final String date;
-  late final String title;
-  late final String description;
-  late final String icon;
+  dynamic date;
+  dynamic title;
+  dynamic orderId;
+  dynamic description;
+  dynamic icon;
+
+  Notifications(
+      {this.date, this.title, this.orderId, this.description, this.icon});
 
   Notifications.fromJson(Map<String, dynamic> json) {
     date = json['date'];
     title = json['title'];
+    orderId = json['order_id'];
     description = json['description'];
     icon = json['icon'];
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['date'] = date;
-    _data['title'] = title;
-    _data['description'] = description;
-    _data['icon'] = icon;
-    return _data;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['date'] = date;
+    data['title'] = title;
+    data['order_id'] = orderId;
+    data['description'] = description;
+    data['icon'] = icon;
+    return data;
   }
 }

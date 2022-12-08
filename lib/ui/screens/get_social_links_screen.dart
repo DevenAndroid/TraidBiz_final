@@ -123,11 +123,11 @@ class GetSocialLinksScreenState extends State<GetSocialLinksScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(notifications[index].title),
+                    Text(notifications[index].title ?? ""),
                     //textBold(snapshot.data!.data.notifications[index].title),
                     addHeight(4),
                     Text(
-                      notifications[index].description,
+                      notifications[index].description ?? "",
                       //snapshot.data!.data.notifications[index].message,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -267,7 +268,7 @@ class CartScreenState extends State<CartScreen> {
                       ),
                       addHeight(8),
                       Text(
-                        '${item.product!.currencySymbol} ${item.product!.price}',
+                        '${item.product!.currencySymbol} ${item.product!.regularPrice}',
                         style: const TextStyle(
                             color: AppTheme.primaryColor,
                             fontSize: 18.0,
@@ -291,9 +292,9 @@ class CartScreenState extends State<CartScreen> {
                                 InkWell(
                                   onTap: () {
                                     showToast("Cart Updated");
-                                    print("tem.product!.id for -1" +
-                                        item.product!.id.toString());
-
+                                    if (kDebugMode) {
+                                      print("tem.product!.id for -1${item.product!.id}");
+                                    }
                                     getUpdateCartData(
                                             context, item.product!.id, '-1')
                                         .then((value) async {
@@ -340,7 +341,6 @@ class CartScreenState extends State<CartScreen> {
                                 InkWell(
                                   onTap: () {
                                     showToast("Cart Updated");
-
                                     getUpdateCartData(
                                             context, item.product!.id, 1)
                                         .then((value) async {

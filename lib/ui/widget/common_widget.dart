@@ -399,7 +399,8 @@ Padding textHeading(text) {
   );
 }
 
-SizedBox loader(context) => SizedBox(
+SizedBox loader(context) =>
+    SizedBox(
     height: MediaQuery.of(context).size.height,
     child: const Center(
         child: CircularProgressIndicator(
