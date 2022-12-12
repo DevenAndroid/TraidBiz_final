@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 
 import 'package:card_swiper/card_swiper.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -431,28 +432,28 @@ class DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
   Future<bool> _onWillPop() async {
-    return (await showDialog(
+        await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Are you sure?'),           // To display the title it is optional
-        content: const Text('Do you want to exit App'),   // Message which will be pop up on the screen
-        // Action widget which will provide the user to acknowledge the choice
+        title: const Text('Are you sure?'),          
+        content: const Text('Do you want to exit App'),
+
         actions: [
           ElevatedButton(
             onPressed: () {
-              showToast("clicked No");
-              Navigator.of(context).pop(false);
-            },             // function used to perform after pressing the button
+              Get.back();
+            },
             child: const Text('No',style: TextStyle(color: Colors.black),),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pop(true);
+              SystemNavigator.pop();
               },
             child: const Text('Yes',style: TextStyle(color: Colors.black),),
           ),
         ],
       ),
-    )) ?? false;
+    );
+        return false;
   }
 }

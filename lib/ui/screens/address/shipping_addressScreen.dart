@@ -20,49 +20,13 @@ class ShippingAddress extends StatefulWidget {
   State<ShippingAddress> createState() => _ShippingAddressState();
 }
 
-class _ShippingAddressState extends State<ShippingAddress> {
-  TextEditingController fnameController = TextEditingController();
-  TextEditingController lnameController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
-  TextEditingController address1 = TextEditingController();
-  TextEditingController address2 = TextEditingController();
-  TextEditingController postcodeController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
+class _ShippingAddressState extends State<ShippingAddress> with AutomaticKeepAliveClientMixin {
 
-  final AddressController _addressController = Get.put(AddressController());
-  String shippingCountry = "";
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    if (_addressController.isDataLoading.value) {
-      fnameController.text = _addressController
-          .model.value.data!.shippingAddress.shippingFirstName
-          .toString();
-      lnameController.text = _addressController
-          .model.value.data!.shippingAddress.shippingLastName
-          .toString();
-      address1.text = _addressController
-          .model.value.data!.shippingAddress.shippingAddress_1
-          .toString();
-      address2.text = _addressController
-          .model.value.data!.shippingAddress.shippingAddress_2
-          .toString();
-      postcodeController.text = _addressController
-          .model.value.data!.shippingAddress.shippingPostcode
-          .toString();
-      cityController.text = _addressController
-          .model.value.data!.shippingAddress.shippingCity
-          .toString();
-      shippingCountry = _addressController
-          .model.value.data!.shippingAddress.shippingCountry
-          .toString();
-    }
-  }
+  final controller = Get.put(AddressController());
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
@@ -74,7 +38,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
             CommonTextFieldWidget(
               icon: Icons.person,
               hint: 'First name',
-              controller: fnameController,
+              controller: controller.fnameController,
               bgColor: AppTheme.colorEditFieldBg,
             ),
             addHeight(12),
@@ -83,7 +47,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
             CommonTextFieldWidget(
               icon: Icons.person,
               hint: 'last name',
-              controller: lnameController,
+              controller: controller.lnameController,
               bgColor: AppTheme.colorEditFieldBg,
             ),
             addHeight(12),
@@ -92,7 +56,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
             CommonTextFieldWidget(
               icon: Icons.home_outlined,
               hint: 'Street address',
-              controller: address1,
+              controller: controller.address1,
               bgColor: AppTheme.colorEditFieldBg,
             ),
             addHeight(12),
@@ -101,7 +65,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
             CommonTextFieldWidget(
               icon: Icons.home_outlined,
               hint: 'Street Optional',
-              controller: address2,
+              controller: controller.address2,
               bgColor: AppTheme.colorEditFieldBg,
             ),
             addHeight(12),
@@ -110,7 +74,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
             CommonTextFieldWidget(
               icon: Icons.home_outlined,
               hint: 'Postcode',
-              controller: postcodeController,
+              controller: controller.postcodeController,
               bgColor: AppTheme.colorEditFieldBg,
             ),
             addHeight(12),
@@ -119,7 +83,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
             CommonTextFieldWidget(
               icon: Icons.location_city_sharp,
               hint: 'City/town',
-              controller: cityController,
+              controller: controller.cityController,
               bgColor: AppTheme.colorEditFieldBg,
             ),
             addHeight(12),
@@ -132,12 +96,12 @@ class _ShippingAddressState extends State<ShippingAddress> {
                   border: Border.all(color: Colors.grey)),
               padding: const EdgeInsets.all(10),
               child: CountryPickerDropdown(
-                initialValue: 'in',
+                initialValue: controller.shippingCountry == "" || controller.shippingCountry == "null" ? 'in' : controller.shippingCountry,
                 isExpanded: true,
                 itemBuilder: _buildDropdownItem,
                 onValuePicked: (Country country) {
-                  shippingCountry = country.isoCode.toString();
-                  print(shippingCountry);
+                  controller.shippingCountry = country.isoCode.toString();
+                  print(controller.shippingCountry);
                 },
               ),
             ),
@@ -162,13 +126,13 @@ class _ShippingAddressState extends State<ShippingAddress> {
                     "",
                     "",
                     // for country code end
-                    fnameController.text.toString(),
-                    lnameController.text.toString(),
-                    address1.text.toString(),
-                    address2.text.toString(),
-                    postcodeController.text.toString(),
-                    cityController.text.toString(),
-                    shippingCountry.toString(),
+                    controller.fnameController.text.toString(),
+                    controller.lnameController.text.toString(),
+                    controller.address1.text.toString(),
+                    controller.address2.text.toString(),
+                    controller.postcodeController.text.toString(),
+                    controller.cityController.text.toString(),
+                    controller.shippingCountry.toString(),
                   ).then((value) {
                     if (value.status) {
                       Fluttertoast.showToast(
@@ -210,4 +174,8 @@ class _ShippingAddressState extends State<ShippingAddress> {
           ],
         ),
       );
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

@@ -107,7 +107,9 @@ void getAlertDialog(title, value, onTap) {
       content: Text(value));
 }
 
-AppBar backAppBar(title) {
+AppBar backAppBar(title,{
+  PreferredSizeWidget? gg,
+}) {
   final CartController cartController = Get.put(CartController());
   final bottomNavController = Get.put(BottomNavController());
   final ProfileController _profileController = Get.put(ProfileController());
@@ -119,6 +121,7 @@ AppBar backAppBar(title) {
     title: Text(
       title,
     ),
+    bottom: gg,
     leading: Padding(
       padding: const EdgeInsets.all(8.0),
       child: IconButton(

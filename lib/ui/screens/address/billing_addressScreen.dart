@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:country_pickers/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:traidbiz/controller/AddressController.dart';
 import 'package:traidbiz/repositories/update_user_meta_repository.dart';
 import 'package:traidbiz/res/theme/theme.dart';
@@ -21,7 +22,7 @@ class BillingAddress extends StatefulWidget {
   State<BillingAddress> createState() => _BillingAddressState();
 }
 
-class _BillingAddressState extends State<BillingAddress> {
+class _BillingAddressState extends State<BillingAddress> with AutomaticKeepAliveClientMixin {
   String? countryPostCode;
   String? countryIsoCode;
 
@@ -34,16 +35,13 @@ class _BillingAddressState extends State<BillingAddress> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
 
-  final _addressController = Get.put(AddressController());
   String billingCountry = "";
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+
+  final _addressController = Get.put(AddressController());
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
@@ -52,11 +50,9 @@ class _BillingAddressState extends State<BillingAddress> {
             fNameController.text = _addressController
                 .model.value.data!.billingAddress.billingFirstName
                 .toString();
-
             lnameController.text = _addressController
                 .model.value.data!.billingAddress.billingLastName
                 .toString();
-
             billingCountry = _addressController.model.value.data!.billingAddress.billingCountry.toString();
             address1.text = _addressController
                 .model.value.data!.billingAddress.billingAddress_1
@@ -148,8 +144,10 @@ class _BillingAddressState extends State<BillingAddress> {
                       padding: const EdgeInsets.all(8),
                       child: CountryPickerDropdown(
                         isExpanded: true,
-                        initialValue: _addressController.model.value.data!.billingAddress.countryIsoCode.toString()??'fj',
-                        itemBuilder: _buildDropdownItemNew,
+                        initialValue: _addressController.model.value.data!.billingAddress.countryIsoCode.toString() == "" ||
+                            _addressController.model.value.data!.billingAddress.countryIsoCode.toString() == "null" ? "in" :
+                        _addressController.model.value.data!.billingAddress.countryIsoCode.toString(),
+                        itemBuilder: _buildDropdownItem,
                         onValuePicked: (Country country) {
                           print("${country.name}");
                           print("${country.phoneCode}");
@@ -224,14 +222,14 @@ class _BillingAddressState extends State<BillingAddress> {
                           border: Border.all(color: Colors.grey)),
                       padding: const EdgeInsets.all(10),
                       child: CountryPickerDropdown(
-                        initialValue: _addressController.model.value.data!.billingAddress.billingCountry==null
-                            ? "fj"
-                            : _addressController.model.value.data!.billingAddress.billingCountry.toString(),
+                        initialValue: billingCountry == "" || billingCountry == "null" ? "in" : billingCountry,
                         isExpanded: true,
                         itemBuilder: _buildDropdownItem,
                         onValuePicked: (Country country) {
                           billingCountry = country.isoCode.toString();
-                          print(billingCountry.toString());
+                          if (kDebugMode) {
+                            print(billingCountry.toString());
+                          }
                         },
                       ),
                     ),
@@ -261,7 +259,8 @@ class _BillingAddressState extends State<BillingAddress> {
                               postcodeController.text.toString(),
                               cityController.text.toString(),
                               countryIsoCode==null ?"fj": countryIsoCode.toString(),
-                              countryPostCode!=null ? "+$countryPostCode" : _addressController.model.value.data!.billingAddress.countryIsoCode.toString(),
+                              countryPostCode != null ? "+$countryPostCode" :
+                              _addressController.model.value.data!.billingAddress.countryIsoCode.toString(),
                               phoneController.text.toString(),
                               emailController.text.toString(),
                               billingCountry.toString(),
@@ -296,42 +295,31 @@ class _BillingAddressState extends State<BillingAddress> {
     );
   }
   Widget _buildDropdownItem(Country country) => SizedBox(
-        width: 250,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            const SizedBox(
-              width: 10,
-            ),
-            CountryPickerUtils.getDefaultFlagImage(country),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Text(
-                country.name,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-          ],
-        ),
-      );
-
-  Widget _buildDropdownItemNew(Country country) => Container(
+    width: 250,
     child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         const SizedBox(
-          width: 12.0,
+          width: 10,
         ),
         CountryPickerUtils.getDefaultFlagImage(country),
-        const SizedBox(width: 8.0,),
-        // Text("+${country.phoneCode}(${country.isoCode})"),
-        Text("+${country.phoneCode}"),
+        const SizedBox(
+          width: 10,
+        ),
+        Expanded(
+            child: Text(
+              country.name,
+              overflow: TextOverflow.ellipsis,
+            )),
+        const SizedBox(
+          width: 10,
+        ),
       ],
     ),
   );
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 
 }

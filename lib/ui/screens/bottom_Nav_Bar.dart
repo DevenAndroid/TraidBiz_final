@@ -87,7 +87,7 @@ class CustomNavigationBarState extends State<CustomNavigationBar> {
           title = 'Stores';
           break;
         case 1:
-          title = 'My cart';
+          title = 'My Order';
           break;
         case 2:
           title = '';

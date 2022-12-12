@@ -43,60 +43,57 @@ class _AddressScreenState extends State<AddressScreen>
       ),
       child: Scaffold(
         key: _scaffoldKey,
-        appBar: backAppBar('Address'),
+        appBar: backAppBar('Address',
+            gg: PreferredSize(
+                preferredSize: const Size(double.maxFinite, 70),
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50.0)),
+                  child: TabBar(
+                    unselectedLabelColor: Colors.black,
+                    labelColor: Colors.white,
+                    tabs: const [
+                      Tab(
+                        child: Text(
+                          'Billing Address',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          'Shipping Address',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      )
+                    ],
+                    labelStyle:
+                        const TextStyle(fontSize: 18.0, color: Colors.white),
+                    unselectedLabelStyle:
+                        const TextStyle(fontSize: 18.0, color: Colors.black),
+                    controller: tabController,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
+                ))),
         backgroundColor: Colors.transparent,
         body: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50.0)),
-                child: TabBar(
-                  unselectedLabelColor: Colors.black,
-                  labelColor: Colors.white,
-                  tabs: const [
-                    Tab(
-                      child: Text(
-                        'Billing Address',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    Tab(
-                      child: Text(
-                        'Shipping Address',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                    )
-                  ],
-                  labelStyle:
-                      const TextStyle(fontSize: 18.0, color: Colors.white),
-                  unselectedLabelStyle:
-                      const TextStyle(fontSize: 18.0, color: Colors.black),
-                  controller: tabController,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  indicator: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: AppTheme.primaryColor,
-                  ),
-                ),
-              ),
-              addHeight(8),
-              Expanded(
-                child: TabBarView(
-                  controller: tabController,
-                  children: const [
-                    BillingAddress(),
-                    ShippingAddress(),
-                  ],
-                ),
-              ),
-            ],
+          child: Expanded(
+            child: TabBarView(
+              physics: BouncingScrollPhysics(),
+              controller: tabController,
+              children: const [
+                BillingAddress(),
+                ShippingAddress(),
+              ],
+            ),
           ),
         ),
       ),
