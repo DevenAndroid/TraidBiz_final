@@ -28,8 +28,7 @@ AppBar buildAppBar(
 ) {
   final GlobalKey<PopupMenuButtonState<int>> _key = GlobalKey();
   //AppBarController _appBarController = Get.put(AppBarController());
-  final MultiCurrencyListController multiCurrencyListController =
-      Get.put(MultiCurrencyListController());
+  final MultiCurrencyListController multiCurrencyListController = Get.put(MultiCurrencyListController());
   final ProfileController _profileController = Get.put(ProfileController());
 
   // to refresh currency
@@ -77,6 +76,7 @@ AppBar buildAppBar(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                     elevation: 16,
+                    insetPadding: EdgeInsets.symmetric(horizontal: 18,vertical: MediaQuery.of(context).size.height*.06),
                     child: multiCurrencyListController.isDataLoading.value
                         ? Column(
                             children: [
@@ -88,7 +88,8 @@ AppBar buildAppBar(
                               )),
                               const SizedBox(height: 20),
                               Expanded(
-                                child: ListView.builder(
+                                child: ListView.separated(
+                                  separatorBuilder: (context,index)=> Divider(height: 1,),
                                   shrinkWrap: true,
                                   itemCount: multiCurrencyListController
                                       .model.value.data!.length,
@@ -96,7 +97,7 @@ AppBar buildAppBar(
                                   itemBuilder: (context, index) {
                                     return _buildRow(
                                         multiCurrencyListController
-                                            .model.value.data!,
+                                            .model.value.data![index],
                                         index);
                                   },
                                 ),
@@ -186,49 +187,38 @@ getUser() async {
   isLoggedIn.value = await isLogIn();
   //showToast(isLoggedIn.value.toString());
 }*/
-Widget _buildRow(List<Data> data, int index) {
-  return InkWell(
+Widget _buildRow(Data data, int index) {
+  final MultiCurrencyListController multiCurrencyListController = Get.put(MultiCurrencyListController());
+  return ListTile(
     onTap: () {
-      print('object' + data[index].code.toString());
-      getUpdateUserCurrency(data[index].code.toString()).then((value) {
+      getUpdateUserCurrency(data.code.toString()).then((value) {
         showToast(value.message);
-
-        final GetHomeController homecontroller = Get.put(GetHomeController());
-        homecontroller.getData();
-        homecontroller.isDataLoading.isTrue
+        multiCurrencyListController.getData();
+        final GetHomeController controller = Get.put(GetHomeController());
+        controller.getData();
+        controller.isDataLoading.isTrue
             ? EasyLoading.show(dismissOnTap: true)
             : EasyLoading.dismiss();
         Get.offAndToNamed(MyRouter.customBottomBar);
       });
     },
-    child: Padding(
+    selectedTileColor: Colors.blue.withOpacity(.1),
+    selected: data.isSelected,
+    minVerticalPadding: 0,
+    contentPadding: EdgeInsets.zero,
+    title: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: Column(
+      child: Row(
         children: <Widget>[
-          Container(height: 1, color: const Color(0xff9aa1b8)),
-          Row(
-            children: <Widget>[
-              // CircleAvatar(
-              //   radius: 24,
-              //   backgroundColor: const Color(0xfff0f3fc),
-              //   child: Image.asset(
-              //     'assets/images/money.png',
-              //     color: const Color(0xff9aa1b8),
-              //     height: 24,
-              //   ),
-              // ),
-              Expanded(child: Text(data[index].title.toString())),
-              Container(
-                decoration: BoxDecoration(
-                    color: const Color(0xfff0f3fc),
-                    borderRadius: BorderRadius.circular(20)),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                child: Text(data[index].code.toString()),
-              ),
-            ],
+          Expanded(child: Text(data.title.toString())),
+          Container(
+            decoration: BoxDecoration(
+                color: const Color(0xfff0f3fc),
+                borderRadius: BorderRadius.circular(20)),
+            padding:
+                const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+            child: Text(data.code.toString()),
           ),
-          const SizedBox(height: 12),
         ],
       ),
     ),
