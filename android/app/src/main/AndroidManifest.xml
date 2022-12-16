@@ -4,8 +4,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
     <!-- Provide required visibility configuration for API level 30 and above -->
+
     <queries>
         <!-- If your app checks for SMS support -->
         <intent>
@@ -20,7 +20,7 @@
     </queries>
 
     <application
-        android:label="TraidBiz"
+        android:label="Traidbiz"
         android:name="${applicationName}"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
@@ -59,7 +59,6 @@
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
 
-
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -74,7 +73,5 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
-
     </application>
 </manifest>

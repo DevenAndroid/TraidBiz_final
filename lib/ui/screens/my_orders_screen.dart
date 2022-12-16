@@ -1,17 +1,9 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
-import 'package:file_utils/file_utils.dart';
-import 'package:open_file/open_file.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:traidbiz/controller/MyOrdersController.dart';
 import 'package:traidbiz/models/ModelGetOrder.dart';
 import 'package:traidbiz/res/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:traidbiz/utils/ApiConstant.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../res/app_assets.dart';
 import '../../routers/my_router.dart';
 import '../widget/common_widget.dart';
@@ -214,84 +206,84 @@ class MyOrdersScreenState extends State<MyOrdersScreen> {
     );
   }
   ///Download code
-  Future<void> downloadFile(downloadLink) async {
-    print(Platform.isAndroid);
-    // print(Platform.isIOS);
-    Dio dio = Dio();
-    final status = await Permission.storage.request();
-    var dirloc;
-    if (Platform.isAndroid == true) {
-      if (status.isGranted == true) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              content: const Text("Downloading Done"),
-              actions: [
-                Obx(() {
-                  return Text(progress.value.toString() + '%');
-                }),
-                Obx(() {
-                  return Container(
-                    height: 10,
-                    width: MediaQuery.of(context).size.width,
-                    color: AppTheme.primaryColor,
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width /
-                            100 *
-                            double.parse(progress.value.toString())),
-                    child: Container(
-                      color: Colors.grey,
-                    ),
-                  );
-                })
-              ],
-            );
-          },
-        );
-        dirloc = "/sdcard/Download/";
-        try {
-          FileUtils.mkdir([dirloc]);
-          await dio.download(downloadLink, dirloc + downloadLink.split('/').last,
-              onReceiveProgress: (receivedBytes, totalBytes) {
-                print('here 1');
-                setState(() {
-                  downloading = true;
-                  progress.value = ((receivedBytes / totalBytes) * 100).toStringAsFixed(0);
-                  print(progress);
-                });
-                print('here 2');
-              });
-        } catch (e) {
-          print('catch catch catch');
-          print(e);
-        }
-        setState(() {
-          downloading = false;
-          progress1.value = "Download Completed.";
-          path = dirloc + downloadLink.split('/').last;
-          _onPressed = () {
-            downloadFile(downloadLink);
-          };
-        });
-        print('Downloader path::::' + downloadLink);
-        print(path);
-
-        Get.back();
-        OpenFile.open(path);
-      } else {
-        setState(() {
-          progress1.value = "Permission Denied!";
-          showToast('Storage permission required');
-        });
-      }
-    } else {
-      var uri = await Uri.parse(downloadLink);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      } else {
-        // can't launch url
-      }
-    }
-  }
+  // Future<void> downloadFile(downloadLink) async {
+  //   print(Platform.isAndroid);
+  //   // print(Platform.isIOS);
+  //   Dio dio = Dio();
+  //   final status = await Permission.storage.request();
+  //   var dirloc;
+  //   if (Platform.isAndroid == true) {
+  //     if (status.isGranted == true) {
+  //       showDialog(
+  //         context: context,
+  //         builder: (BuildContext context) {
+  //           return AlertDialog(
+  //             content: const Text("Downloading Done"),
+  //             actions: [
+  //               Obx(() {
+  //                 return Text(progress.value.toString() + '%');
+  //               }),
+  //               Obx(() {
+  //                 return Container(
+  //                   height: 10,
+  //                   width: MediaQuery.of(context).size.width,
+  //                   color: AppTheme.primaryColor,
+  //                   padding: EdgeInsets.only(
+  //                       left: MediaQuery.of(context).size.width /
+  //                           100 *
+  //                           double.parse(progress.value.toString())),
+  //                   child: Container(
+  //                     color: Colors.grey,
+  //                   ),
+  //                 );
+  //               })
+  //             ],
+  //           );
+  //         },
+  //       );
+  //       dirloc = "/sdcard/Download/";
+  //       try {
+  //         FileUtils.mkdir([dirloc]);
+  //         await dio.download(downloadLink, dirloc + downloadLink.split('/').last,
+  //             onReceiveProgress: (receivedBytes, totalBytes) {
+  //               print('here 1');
+  //               setState(() {
+  //                 downloading = true;
+  //                 progress.value = ((receivedBytes / totalBytes) * 100).toStringAsFixed(0);
+  //                 print(progress);
+  //               });
+  //               print('here 2');
+  //             });
+  //       } catch (e) {
+  //         print('catch catch catch');
+  //         print(e);
+  //       }
+  //       setState(() {
+  //         downloading = false;
+  //         progress1.value = "Download Completed.";
+  //         path = dirloc + downloadLink.split('/').last;
+  //         _onPressed = () {
+  //           downloadFile(downloadLink);
+  //         };
+  //       });
+  //       print('Downloader path::::' + downloadLink);
+  //       print(path);
+  //
+  //       Get.back();
+  //       OpenFile.open(path);
+  //     } else {
+  //       setState(() {
+  //         progress1.value = "Permission Denied!";
+  //         showToast('Storage permission required');
+  //       });
+  //     }
+  //   } else {
+  //     var uri = await Uri.parse(downloadLink);
+  //     if (await canLaunchUrl(uri)) {
+  //       await launchUrl(uri);
+  //     } else {
+  //       // can't launch url
+  //     }
+  //   }
+  // }
 }
